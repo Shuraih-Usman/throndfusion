@@ -235,7 +235,11 @@
       
     });
     
-  
+    
+    var selectButtons = table == 'wallets' ? [] : [
+      "selectAll",
+      "selectNone",];
+
     var Datatable = dataTable.DataTable({
         "processing": true,
         "serverSide": true,
@@ -273,11 +277,10 @@
             style: "os",
             selector: "td:nth-child(2)",
         },
+
+
   
-        buttons: [
-            "selectAll",
-            "selectNone",
-        ],
+        buttons: selectButtons,
   
         createdRow: function (row, data, dataIndex) {
             var selectedRows = Datatable.rows({ selected: true }).data().toArray();

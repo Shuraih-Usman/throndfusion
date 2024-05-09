@@ -59,8 +59,7 @@
 
     <div class="col-12 mb-5 mt-3">
         <div class="card">
-            <div class="card-header mb-5">History</div>
-
+            <div class="card-header">History</div>
 
             <div class="table-responsive text-nowrap m-3">
                 <table id="dataTable" class="table" data-filter="ALL">
@@ -69,6 +68,7 @@
                       <th>Id</th>
                       <th>Amount</th>
                       <th>Type</th>
+                      <th>Transaction ID </th>
                       <th>Status</th>
                       <th>Date</th>
                     </tr>
