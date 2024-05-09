@@ -116,6 +116,8 @@
   $(document).ready(function() {
 
     const Paystack_KEY = "pk_test_9549d05f0e7cad7b7a15c166da6d4ccf88bfa865";
+    const MONNIFY_API_KEY = "MK_TEST_J6GSNYYQ99";
+    const MONNIFY_CONTRACT_CODE = "3199675926";
 
   
 
@@ -1224,8 +1226,97 @@ var onwork_services = $("#onwork_services").DataTable({
                   console.error(xhr.responseText);
                 }
               });
-            } else if (val === "Monnify") { // Fixed: lowercase 'monnify'
+            } else if (val === "monnify") { 
+              
+              // Fixed: lowercase 'monnify'
               // Handle Monnify payment here
+
+
+                $.ajax({
+                  url: '/ajax/pay',
+                  type: 'POST',
+                  headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                  },
+                  data: {
+                    action: 'insert_payment',
+                    price: price,
+                    user_id: user_id,
+                    reference: reference,
+                    payment_type: 'monnify',
+                  },
+          
+                  success: (data) => {
+                    if(data.s == 1) {
+                      var reference = data.r;
+          
+                      MonnifySDK.initialize({
+                        amount: price,
+                        currency: "NGN",
+                        reference: reference,
+                        customerFullName: user_fullname,
+                        customerEmail: user_email,
+                        apiKey: MONNIFY_API_KEY,
+                        contractCode: MONNIFY_CONTRACT_CODE,
+                        isTestMode: true,
+                        paymentDescription: title,
+                
+                        onComplete: (response) => {
+                          var ref = response.transactionReference;
+                          
+                
+                          $.ajax({
+                            url : '/ajax/pay',
+                            method: "post",
+                            data : {
+                              action : 'addwallets',
+                              reference: ref,
+                              detectref: reference,
+                              user_id: user_id,
+                              payment: 'monnify',
+                            },
+                            headers: {
+                              'X-CSRF-TOKEN': csrfToken 
+                          },
+                
+                          success: function(data) {
+                
+                            if(data.s == 1) {
+                              Toasting(1, data.m);
+                              counter(3, () => {
+                                window.location.href = '/user/service-requirement?trans='+data.t;
+                              });
+                            } else {
+                              Toasting(0, data.m);
+                            }
+                          },
+                          
+                          error: function(xhr, error) {
+                            console.error(xhr.responseText);
+                            var errorObject = JSON.parse(xhr.responseText);
+                            if (errorObject.message == 'Unauthenticated.') {
+                              Toasting(0, 'Pls login or register first');
+                            }
+                          }
+                
+                          });
+                
+                        },
+                
+                        onClose: () => {
+                          
+                        },
+                
+                      });
+          
+                    }
+                  },
+          
+                  error: (xhr) => {
+                    console.error(xhr.responseText);
+                  }
+                });
+
               Swal.fire(`You selected: ${val} and the ddddamount is ${price}`);
             } else {
     
