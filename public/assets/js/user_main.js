@@ -1254,12 +1254,12 @@ var onwork_services = $("#onwork_services").DataTable({
                         amount: price,
                         currency: "NGN",
                         reference: reference,
-                        customerFullName: user_fullname,
+                        customerFullName: username,
                         customerEmail: user_email,
                         apiKey: MONNIFY_API_KEY,
                         contractCode: MONNIFY_CONTRACT_CODE,
                         isTestMode: true,
-                        paymentDescription: title,
+                        paymentDescription: "Adding funds to wallet",
                 
                         onComplete: (response) => {
                           var ref = response.transactionReference;
@@ -1274,6 +1274,7 @@ var onwork_services = $("#onwork_services").DataTable({
                               detectref: reference,
                               user_id: user_id,
                               payment: 'monnify',
+                              amount: price,
                             },
                             headers: {
                               'X-CSRF-TOKEN': csrfToken 
@@ -1284,7 +1285,7 @@ var onwork_services = $("#onwork_services").DataTable({
                             if(data.s == 1) {
                               Toasting(1, data.m);
                               counter(3, () => {
-                                window.location.href = '/user/service-requirement?trans='+data.t;
+                                location.reload();
                               });
                             } else {
                               Toasting(0, data.m);
@@ -1317,7 +1318,6 @@ var onwork_services = $("#onwork_services").DataTable({
                   }
                 });
 
-              Swal.fire(`You selected: ${val} and the ddddamount is ${price}`);
             } else {
     
               Swal.fire(`You selected: ${val} and the ddddamount is ${price} and id is ${user_id}`);

@@ -9,10 +9,10 @@
     <h4 class="fw-bold py-3 mb-4"><a href="/user/dashboard" class="text-muted fw-light">Dashboard /</a>Wallet</h4>
 
 
-
+    <div id="model" data-name="wallets"></div>
     <div class="row">
         
-        <div class="col-12 mb-4">
+    <div class="col-12 mb-4">
             <div class="card h-100">
               <div class="card-body  text-center">
 
@@ -55,6 +55,27 @@
           </div>
 
 
+    </div>
+
+    <div class="col-12 mb-5 mt-3">
+        <div class="card">
+            <div class="card-header mb-5">History</div>
+
+
+            <div class="table-responsive text-nowrap m-3">
+                <table id="dataTable" class="table" data-filter="ALL">
+                  <thead>
+                    <tr>
+                      <th>Id</th>
+                      <th>Amount</th>
+                      <th>Type</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+        </div>
     </div>
 
   </div>

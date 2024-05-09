@@ -160,11 +160,11 @@ class MainController extends Controller
                     $payment = new \App\Http\Controllers\MainController\Payments;
                     $vaildate = $payment->validatePaystackWallets($request);    
                     return response()->json($vaildate);
-                    
+
                 } else if($request->payment == 'monnify') {
 
                     $payment = new \App\Http\Controllers\MainController\Payments;
-                    $vaildate = $payment->validateMonnifyService($request);    
+                    $vaildate = $payment->validateMonnifyWallets($request);    
                     return response()->json($vaildate);
                 }
 

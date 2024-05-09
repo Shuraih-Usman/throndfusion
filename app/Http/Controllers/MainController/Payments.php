@@ -188,4 +188,58 @@ class Payments extends Controller
 
     }
 
+    public function validateMonnifyWallets($req) {
+
+        $validate = new \App\Http\Controllers\Payment\PayMonnify;
+        $s = 0;
+        $t = "";
+        $monnify_validate = $validate->verify($req->reference, $req->detectref);
+        if($monnify_validate['s'] == 1) {
+            $id = $req->user_id;
+            $item = User::find($id);
+    
+            if(!$item) {
+                $m = "Invalid user or deleted";
+            } else {
+                $trans = new \App\Models\UserModel\Wallet();
+                $transaction_id = $req->detectref;
+                $t = $transaction_id;
+                
+                try {
+                    DB::beginTransaction();
+                    $trans->reference = $transaction_id;
+                    $trans->user_id = $id;
+                    $trans->amount = $req->amount;
+                    $trans->type = "funding";
+                    $trans->status = 1;
+                    $trans->save();
+
+                    try {
+
+                        $user = User::find($id);
+                        $amount = $user->balance + $req->amount;
+                        $user->balance = $amount;
+                        $user->save();
+                        $s = 1;
+                        $m = "You successfully fund your account with ". CUR.$req->amount;
+                        DB::commit();
+
+                    } catch(\Exception $e) {
+                        DB::rollBack();
+                        $m = "Error in funding ".$e->getMessage();
+                    }
+
+                } catch(\Exception $e) {
+                    DB::rollBack();
+                    $m = "Error ".$e->getMessage();
+                }
+        }
+        } else {
+            $m = $monnify_validate['m'];
+        }
+
+        return ['m' => $m, 's' => $s, 't' => $t];
+
+    }
+
 }
