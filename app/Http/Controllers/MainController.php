@@ -168,6 +168,11 @@ class MainController extends Controller
                     return response()->json($vaildate);
                 }
 
+            } else if($action == "user_withdraw") {
+
+                    $payment = new \App\Http\Controllers\UserModelController\Wallets;
+                    $vaildate = $payment->withdraw($request);    
+                    return response()->json($vaildate);
             }
 
         } else if($type == 'select_project') {

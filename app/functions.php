@@ -36,3 +36,8 @@ function getPercent($part, $num) {
     $val= ($part / 100) * $num;
     return $val;
 }
+
+const TEXT = [
+    "e_withdraw" => "Error in withdrawal pls contact admin",
+    "s_u_withraw" => "You successfully make withdrawal request pls wait for your withdrawal to proccess",
+];

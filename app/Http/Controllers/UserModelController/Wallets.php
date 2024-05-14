@@ -5,6 +5,9 @@ namespace App\Http\Controllers\UserModelController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\UserModel\Wallet;
+use App\Models\AdminModel\Withdraw_request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class Wallets extends Controller
 {
@@ -80,5 +83,55 @@ class Wallets extends Controller
         ];
     
         return $response;
+    }
+
+
+    public function withdraw($request) {
+        $s = 0;
+
+        $validate = Validator::make($request->all(), [
+            "amount" => "numeric|required|min:1000",
+        ]);
+
+        if($validate->fails()) {
+            $m = $validate->errors()->first();
+        } else {
+            $wallet = new Wallet();
+
+            DB::beginTransaction();
+
+            try {
+
+                $wallet->amount = $request->amount;
+                $wallet->user_id = $request->user_id;
+                $wallet->reference = $request->reference;
+                $wallet->type = "widthrawal";
+                $wallet->status = 0;
+                $wallet->save();
+                
+                try {
+
+                    $payment = new Withdraw_request();
+
+                    $payment->amount = $request->amount;
+                    $payment->user_id = $request->user_id;
+                    $payment->reference = $request->reference;
+                    $payment->save();
+                    DB::commit();
+                    $s = 1;
+                    $m = TEXT['s_u_withraw'];
+                }  catch(\Exception $e) {
+                    DB::rollBack();
+                    $m = $e->getMessage();
+                }
+
+            } catch(\Exception $e) {
+                DB::rollBack();
+                $m = TEXT['e_withdraw'];
+            }
+        }
+
+        return ['m' => $m, 's' => $s];
+        
     }
 }

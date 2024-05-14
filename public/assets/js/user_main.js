@@ -1111,6 +1111,8 @@ var onwork_services = $("#onwork_services").DataTable({
     responsive: true,
   });
 
+  
+  // Adding funds to user account
   $('#user_add_funds').click(() => {
 
 
@@ -1335,137 +1337,59 @@ var onwork_services = $("#onwork_services").DataTable({
     
     
     
-    // Swal.fire({
-    //   title: "Enter the amount you are funding",
-    //   input: "text",
-    //   inputLabel: "Please enter the amount you are funding in Naira",
-    //   showCancelButton: true,
-    //   inputValidator: (value) => {
-    //     if (!value) {
-    //       return "Please enter the amount";
-    //     } else {
-    //       return Swal.fire({
-    //         title: "Payment Type",
-    //         input: "select",
-    //         showCancelButton: true,
-    //         inputOptions: {
-    //           paystack: "Paystack",
-    //           monnify: "Monnify",
-    //           manual: "Manual"
-    //         },
-    //         inputPlaceholder: "Select Payment type",
-    //         inputValidator: (val) => {
-    //           if (!val) {
-    //             return "You must select a payment method";
-    //           } else {
-    //             return new Promise((resolve) => {
-    //               const price = parseFloat(value);
-    //               const user_id = $("#user_id").val();
-    //               const user_email = $("#user_email").val();
-    //               const username = $("#fullname").val();
-    //               const reference = Math.floor(Math.random() * 1000000000) + 1;
-    
-    //               if (val === "Paystack") {
-    //                 const DECIMAL_FEE = 0.015;
-    //                 const FEE_CAP = 2000;
-    //                 const FLAT_FEE = 100;
-    
-    //                 let final_amount = price + FLAT_FEE;
-    //                 const application_fees = DECIMAL_FEE * price;
-    
-    //                 if (application_fees > FEE_CAP) {
-    //                   final_amount = price + FEE_CAP;
-    //                 }
-    
-    //                 $.ajax({
-    //                   url: '/ajax/pay',
-    //                   type: 'POST',
-    //                   headers: {
-    //                     'X-CSRF-TOKEN': csrfToken,
-    //                   },
-    //                   data: {
-    //                     action: 'insert_payment',
-    //                     price: price,
-    //                     user_id: user_id,
-    //                     reference: reference,
-    //                     payment_type: 'paystack',
-    //                   },
-    //                   success: (data) => {
-    //                     if (data.s == 1) {
-    //                       const reference = data.r;
-    //                       const handler = PaystackPop.setup({
-    //                         key: 'pk_test_9549d05f0e7cad7b7a15c166da6d4ccf88bfa865',
-    //                         userid: user_id,
-    //                         email: user_email,
-    //                         amount: final_amount * 100,
-    //                         firstname: username,
-    //                         ref: reference,
-    //                         callback: function (response) {
-    //                           const res = response.reference;
-    //                           $.ajax({
-    //                             url: '/ajax/pay',
-    //                             method: "post",
-    //                             data: {
-    //                               action: 'addwallets',
-    //                               reference: res,
-    //                               user_id: user_id,
-    //                               payment: 'paystack',
-    //                             },
-    //                             headers: {
-    //                               'X-CSRF-TOKEN': csrfToken
-    //                             },
-    //                             success: function (data) {
-    //                               if (data.s == 1) {
-    //                                 Toasting(1, data.m);
-    //                                 counter(3, () => {
-    //                                   resolve();
-    //                                   location.reload();
-    //                                 });
-    //                               } else {
-    //                                 Toasting(0, data.m);
-    //                                 resolve(data.m);
-    //                                 console.log(data.m);
-    //                               }
-    //                               console.log(data);
-    //                             },
-    //                             error: function (xhr, error) {
-    //                               var errorObject = JSON.parse(xhr.responseText);
-    //                               if (errorObject.message == 'Unauthenticated.') {
-    //                                 Toasting(0, 'Please login or register first');
-    //                               }
-    //                             }
-    //                           });
-    //                         },
-    //                         onClose: function () {
-    //                           Toasting(0, 'Transaction was not completed, window closed.');
-    //                         },
-    //                       });
-    //                       handler.openIframe();
-    //                     } else {
-    //                       resolve(data.m);
-    //                     }
-    //                   },
-    //                   error: (xhr) => {
-    //                     console.error(xhr.responseText);
-    //                   }
-    //                 });
-    //               } else if (val === "Monnify") {
-    //                 // Handle Monnify payment here
-    //                 resolve();
-    //                 Swal.fire(`You selected: ${val} and the amount is ${price}`);
-    //               } else {
-    //                 resolve();
-    //                 // Handle Manual payment here
-    //               }
-    //             });
-    //           }
-    //         }
-    //       });
-    //     }
-    //   }
-    // });
-    
-    
+  });
+
+  // user withdrawal
+
+  $("#user_withdraw").click(() => {
+
+    Swal.fire({
+      title: "Amount",
+      input: "text",
+      inputLabel: "Please enter the amount you are withrawing in Naira",
+      showCancelButton: true,
+      inputValidator: (value) => {
+        if (!value) {
+          return "Please enter the amount";
+        }
+      }
+    }).then((amount) => {
+
+     
+
+      if(amount.isConfirmed) {
+        const reference = Math.floor(Math.random() * Date.now());
+        const user_id = $("#user_id").val();
+        const amt = amount.value;
+
+        $.ajax({
+          url: "/ajax/pay",
+          type: "POST",
+          data: {
+            action: "user_withdraw",
+            amount: amt,
+            reference: reference,
+            user_id: user_id,
+          },
+          headers: {
+            'X-CSRF-TOKEN': csrfToken,
+          },
+
+          success: (data) => {
+            console.log(data)
+            Result(data);
+          },
+
+          error: (xhr) => {
+            console.error(xhr.responseText);
+          }
+        });
+
+      }
+
+    });
+
+
   });
 
 
@@ -1500,5 +1424,13 @@ var onwork_services = $("#onwork_services").DataTable({
             background: "linear-gradient(to right, #CE5937 0%, #A42B0B 50%, #C54313 100%)",
         },
     }).showToast();
+    }
+  }
+
+  function Result(data) {
+    if(data.s == 1) {
+     return Toasting(1, data.m);
+    } else {
+     return Toasting(0, data.m);
     }
   }
