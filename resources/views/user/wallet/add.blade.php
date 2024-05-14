@@ -49,6 +49,10 @@
                 <div class="col-sm-6 col-md-6 text-center mb-3">
                     <a href="javascript:void(0);" id="user_add_coins" class="btn btn-primary w-100 d-grid">Buy TF coins</a>
                   </div>
+
+                  <div class="col-12 text-center mb-3">
+                    <a href="javascript:void(0);" id="user_withdraw" class="btn btn-primary w-100 d-grid">Withdraw</a>
+                  </div>
                 </div>
               </div>
             </div>
