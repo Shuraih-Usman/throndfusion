@@ -245,7 +245,7 @@
 
           <ul class="menu-inner py-1">
             <!-- Dashboard -->
-            <li class="menu-item active">
+            <li class="menu-item">
               <a href="/" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Dashboard</div>
@@ -268,6 +268,79 @@
                 <li class="menu-item">
                   <a href="{{route('admin.add-user')}}" class="menu-link">
                     <div data-i18n="Add User">Add User</div>
+                  </a>
+                </li>
+              
+              </ul>
+            </li>
+
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-copy-alt"></i>
+                <div data-i18n="Layouts">Campaign</div>
+              </a>
+
+              <ul class="menu-sub">
+                <li class="menu-item">
+                  <a href="{{route('admin.campaigns')}}" class="menu-link">
+                    <div data-i18n="Campaigns">Campaigns</div>
+                  </a>
+                </li>
+
+                <li class="menu-item">
+                  <a href="{{route('admin.campaign_type')}}" class="menu-link">
+                    <div data-i18n="Campaign Type">Campaign Type</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{{route('admin.donation')}}" class="menu-link">
+                    <div data-i18n="Donations">Donations</div>
+                  </a>
+                </li>
+
+                <li class="menu-item">
+                  <a href="{{route('admin.investment')}}" class="menu-link">
+                    <div data-i18n="Investments">Investments</div>
+                  </a>
+                </li>
+              
+              </ul>
+            </li>
+
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-download"></i>
+                <div data-i18n="Layouts">Services</div>
+              </a>
+
+              <ul class="menu-sub">
+
+                <li class="menu-item">
+                  <a href="{{route('admin.services')}}" class="menu-link">
+                    <div data-i18n="Service">Services</div>
+                  </a>
+                </li>
+
+                <li class="menu-item">
+                  <a href="{{route('admin.service-cats')}}" class="menu-link">
+                    <div data-i18n="Service Category">Service Category</div>
+                  </a>
+                </li>
+
+                <li class="menu-item">
+                  <a href="{{route('admin.campaign_type')}}" class="menu-link">
+                    <div data-i18n="Campaign Type">Campaign Type</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{{route('admin.donation')}}" class="menu-link">
+                    <div data-i18n="Donations">Donations</div>
+                  </a>
+                </li>
+
+                <li class="menu-item">
+                  <a href="{{route('admin.investment')}}" class="menu-link">
+                    <div data-i18n="Investments">Investments</div>
                   </a>
                 </li>
               
@@ -452,5 +525,11 @@
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
   </body>
 </html>

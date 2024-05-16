@@ -1,22 +1,19 @@
 @extends('admin.app')
 
 @section('title')
-    Campaign Type
+    Campaign Donation
 @endsection
 
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
-    <h4 class="fw-bold py-3 mb-4"><a href="/user/dashboard" class="text-muted fw-light">Dashboard /</a> Campaign Type</h4>
+    <h4 class="fw-bold py-3 mb-4"><a href="/admin/dashboard" class="text-muted fw-light">Dashboard /</a> <a href="/admin/campaigns" class="text-muted fw-light">Campaigns /</a> Donations</h4>
 
 
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#create">
-      Create Campaign Type
-    </button>
 
     <!-- Basic Bootstrap Table -->
     <div class="card">
     
-    <div id="model" data-name="campaign_types"></div>
+    <div id="model" data-name="donations"></div>
 
     
 
@@ -55,6 +52,8 @@
             <tr>
               <th>Id</th>
               <th>Title</th>
+              <th>Username</th>
+              <th>Amount </th>
               <th>Status</th>
               <th>Actions</th>
               <th>Date</th>

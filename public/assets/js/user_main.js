@@ -1376,8 +1376,8 @@ var onwork_services = $("#onwork_services").DataTable({
           },
 
           success: (data) => {
-            console.log(data)
             Result(data);
+            Datatable.draw(false);
           },
 
           error: (xhr) => {

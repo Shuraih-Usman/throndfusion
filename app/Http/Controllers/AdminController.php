@@ -35,8 +35,29 @@ class AdminController extends Controller
         return view('admin.campaigns.campaign-type');
     }
 
+    public function Donation() {
+        return view('admin.campaigns.donation');
+    }
+
+    public function Investment() {
+        return view('admin.campaigns.investment');
+    }
+
+    public function Campaigns() {
+        return view('admin.campaigns.index');
+    }
+
+
     public function serviceCats() {
         return view('admin.services.service-cat');
+    }
+
+        public function Services() {
+        return view('admin.services.index');
+    }
+
+    public function Enrollservices() {
+        return view('admin.services.enroll');
     }
 
      public function wishlistsCats() {

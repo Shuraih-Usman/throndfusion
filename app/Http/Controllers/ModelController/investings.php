@@ -4,39 +4,10 @@ namespace App\Http\Controllers\ModelController;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use App\Models\AdminModel\Campaign_type;
+use App\Models\AdminModel\investing;
 
-class Campaign_types extends Controller
+class Investings extends Controller
 {
-    //
-
-    public function add($request)
-    {
-        $s = 0;
-        $m = "";
-
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string',
-       
-        ]);
-
-        if ($validator->fails()) {
-            $m = $validator->errors()->first();
-        } else {
-            
-
-            $user = new Campaign_type();
-            $user->title = $request->title;
-            $user->description = $request->description;
-            $user->save();
-            $s = 1;
-            $m = "You have successfully added a Campaign Type";
-        }
-
-        return ['m' => $m, 's' => $s];
-    }
-
     public function list($request) 
     {
         
@@ -50,25 +21,29 @@ class Campaign_types extends Controller
     
         $filterData = $request->input('filterdata');
     
-        $query = Campaign_type::query();
+        $query = Investing::query()
+                    ->join('campaigns as c', 'd.campaign_id', 'c.id')
+                    ->join('users as u', 'd.user_id', 'u.id')
+                    ->selectRaw('d.*, c.title as campaign_title, u.username as username')
+                    ->from('investings as d');
     
         if ($filterData == 'Draft') {
-            $query->where('status', 0);
+            $query->where('d.status', 0);
         } elseif ($filterData == 'Actived') {
-            $query->where('status', 1);
+            $query->where('d.status', 1);
         }
     
         if (!empty($searchValue)) {
-            $query->where('title', 'LIKE', "%$searchValue%");
+            $query->where('c.title', 'LIKE', "%$searchValue%");
         }
     
-        $columns = ['id', 'title', 'status', 'created_at'];
+        $columns = ['d.id', 'c.title', 'd.status', 'd.created_at'];
         $orderColumn = $columns[$orderColumnIndex] ?? $columns[0];
         $orderDirection = isset($orderDirection) ? $orderDirection : 'desc';
     
         $query->orderBy($orderColumn, $orderDirection);
     
-        $totalRecords = Campaign_type::count();
+        $totalRecords = Investing::count();
     
         $results = $query->skip($start)->take($length)->get();
         $totalFiltered = ($searchValue != '') ? $results->count() : $totalRecords;
@@ -98,7 +73,11 @@ class Campaign_types extends Controller
     
             $rowData = [
                $row->id,
-               $row->title,
+               $row->campaign_title,
+               $row->username,
+               CUR.$row->amount,
+               $row->shared,
+               $row->stop_date,
                $status,
                $dropDown,
                $row->created_at->format('d M, Y')
@@ -119,12 +98,13 @@ class Campaign_types extends Controller
     }
 
 
+    
     public function toStatus($request) {
         $s = 0;
         $errors = [];
         $type = $request->type;
         $ids = $request->ids;
-        $table = 'Campaign type';
+        $table = 'Investing Campaign';
         if (Admin('superAdmin') != 1) {
             $m = "Unauthorized action";
         } else {
@@ -142,7 +122,7 @@ class Campaign_types extends Controller
                             if(!$id) {
                                 continue;
                             }
-                          $user = Campaign_type::find($id);
+                          $user = Investing::find($id);
                           $user->status = 1;
                           $user->save();
                           $total++;
@@ -161,7 +141,7 @@ class Campaign_types extends Controller
                             if(!$id) {
                                 continue;
                             }
-                          $user = Campaign_type::find($id);
+                          $user = Investing::find($id);
                           $user->status = 0;
                           $user->save();
                           $total++;
@@ -180,7 +160,7 @@ class Campaign_types extends Controller
                             if(!$id) {
                                 continue;
                             }
-                          $user = Campaign_type::find($id);
+                          $user = Investing::find($id);
                           $user->delete();
                           $total++;
                             
@@ -194,21 +174,21 @@ class Campaign_types extends Controller
                         }
                         break;
                     case 'draft':
-                        $user = Campaign_type::find($ids);
+                        $user = Investing::find($ids);
                         $user->status = 0;
                         $user->save();
                         $s = 1; 
                         $m = "Item was successfully updated";
                         break;
                     case 'activate':
-                        $user = Campaign_type::find($ids);
+                        $user = Investing::find($ids);
                         $user->status = 1;
                         $user->save();
                         $s = 1; 
                         $m = "Item was successfully updated";
                         break; 
                     case 'delete':
-                        $user = Campaign_type::find($ids);
+                        $user = Investing::find($ids);
                         $s = 1; 
                         $m = "Item was successfully deleted";
                         break;
@@ -223,45 +203,4 @@ class Campaign_types extends Controller
         
         return ['m' => $m, 's' => $s];
     }
-
-
-    public function edit($request) {
-        $s = 0;
-    
-     
-            $validator = Validator::make($request->all(), [
-                'title' => 'required|string',
-
-            ]);
-    
-            if( $validator->fails() ) {
-                $m = $validator->errors()->first();
-            } else {
-    
-                try {
-                    
-                    $campaign = Campaign_type::find($request->id);
-                    $campaign->title = $request->title;
-                    $campaign->description = $request->description;
-                    $campaign->save();
-                    $s = 1;
-                    $m = "Edited Successfully ";
-                } catch (\Exception $e) {
-                    $m = "Error. ".$e->getMessage();
-                }
-    
-            }
-    
-        
-    
-        return ['m' => $m, 's' => $s];
-    }
-
-
-    public function getRow($request) {
-        $campaign = Campaign_type::find($request->id);
-        return $campaign;
-    }
-
-
 }

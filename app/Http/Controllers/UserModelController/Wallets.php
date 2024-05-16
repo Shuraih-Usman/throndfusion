@@ -106,7 +106,7 @@ class Wallets extends Controller
                 $wallet->user_id = $request->user_id;
                 $wallet->reference = $request->reference;
                 $wallet->type = "widthrawal";
-                $wallet->status = 0;
+                $wallet->status = 2;
                 $wallet->save();
                 
                 try {
@@ -116,6 +116,8 @@ class Wallets extends Controller
                     $payment->amount = $request->amount;
                     $payment->user_id = $request->user_id;
                     $payment->reference = $request->reference;
+                    $wallet->status = 2;
+                    
                     $payment->save();
                     DB::commit();
                     $s = 1;

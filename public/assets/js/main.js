@@ -178,6 +178,7 @@ $(document).ready(function() {
       buttons: [
           "selectAll",
           "selectNone",
+          'csv', 'excel', 'pdf', 'print',
           {
               text: "Delete",
               className: "btn btn-danger waves-effect waves-light",
@@ -390,6 +391,114 @@ $(document).ready(function() {
     });
 
 
+            // Campaigns DETAILS MODAL
+
+            $(document).on('click', '.inv_details', function(e) {
+              e.preventDefault();
+          
+              var type  = $(this).attr('data-type');
+              if(type == 2) {
+                  $("#invest_modal").modal('show');
+          
+                  var title = $(this).data('title');
+                  var amount = $(this).data('amount');
+                  var goal = $(this).data('goal');
+                  var shared = $(this).data('share');
+                  var created = $(this).data('date');
+                  var stop = $(this).data('stop');
+                  var description = $(this).data('description');
+                  var category = $(this).data('category');
+                  var status = $(this).data('status');
+                  
+                  $("#inv_title").text(title);
+                  $("#inv_goal").text(goal);
+                  $("#inv_amount").text(amount);
+                  $("#inv_shared").text(shared);
+                  $("#inv_cre_date").text(created);
+                  $("#inv_end_date").text(stop);
+                  if(status == 1) {
+                      $("#inv_pr_status").text('Pending');
+                  } else if(status == 2) {
+                      $("#inv_pr_status").text('Active');
+                  } else {
+                      $("#inv_pr_status").text('Close');
+                  }
+                  $("#inv_description").html(description);
+                  $("#inv_category").text(category);
+              } else {
+                  // Do something else if type is not 2
+
+                  $("#donate_modal").modal('show');
+
+                  var title = $(this).data('title');
+                  var amount = $(this).data('amount');
+                  var goal = $(this).data('goal');
+                  var created = $(this).data('date');
+                  var description = $(this).data('description');
+                  var category = $(this).data('category');
+                  var status = $(this).data('status');
+                  var username = $(this).data('username');
+
+                  $("#don_title").text(title);
+                  $("#don_goal").text(goal);
+                  $("#don_amount").text(amount);
+                  $("#don_category").text(category);
+                  $("#don_cre_date").text(created);
+
+                    if(status == 1) {
+                      $("#don_pr_status").text('Pending');
+                  } else if(status == 2) {
+                      $("#don_pr_status").text('Active');
+                  } else {
+                      $("#don_pr_status").text('Close');
+                  }
+
+                  $("#don_p_status").html(description);
+                  $("#don_username").text(username);
+              }
+          });
+
+          // Services Details
+
+          $(document).on('click', '.service_details', function(e) {
+            e.preventDefault();
+
+            $("#service_details_modal").modal('show');
+            var title = $(this).data('title');
+            var price = $(this).data('price');
+            var username = $(this).data('username');
+            var date = $(this).data('date');
+            var delivery = $(this).data('delivery');
+            var status = $(this).data('status');
+            var cat_title = $(this).data('cat_title');
+            var description = $(this).data('description');
+            var acquire = $(this).data('acquire');
+            var image = $(this).data('image');
+            var img = new Image();
+            $("#inv_title").text(title);
+            $("#inv_goal").text(price);
+            $("#inv_amount").text(acquire);
+            $("#inv_shared").text(username);
+            $("#inv_cre_date").text(date);
+            $("#inv_end_date").text(delivery);
+            if(status == 1) {
+                $("#inv_pr_status").text('Active');
+            } else if(status == 0) {
+                $("#inv_pr_status").text('Inactive');
+            } else {
+                $("#inv_pr_status").text('Close');
+            }
+            $("#inv_description").html(description);
+            $("#inv_category").text(cat_title);
+            img.src = image;
+            img.style.maxWidth = "100%";
+            $("#sd_img").empty();
+            $("#sd_img").append(img);
+
+
+          } );
+          
+
 
   function ActiontoStatus(type, rowId = '') {
     let title;
@@ -532,8 +641,6 @@ function ajaxSelect(id, action, itemID = null) {
         console.log(xhr.responseText || error);
       }
     });
-  } else {
-    console.log('ERROR');
   }
   
 }

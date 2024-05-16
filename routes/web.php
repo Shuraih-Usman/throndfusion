@@ -33,6 +33,11 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\AdminController')->grou
         Route::get('/profile', [AdminController::class, 'Profile'])->name('admin.profile');
         Route::get('/campaign-type', [AdminController::class, 'Campaign_type'])->name('admin.campaign_type');
         Route::get('/service-category', [AdminController::class, 'serviceCats'])->name('admin.service-cats');
+        Route::get('/services', [AdminController::class, 'Services'])->name('admin.services');
+        Route::get('/enroll-services', [AdminController::class, 'Enrollservices'])->name('admin.enrollservices');
+        Route::get('/donation', [AdminController::class, 'Donation'])->name('admin.donation');
+        Route::get('/investment', [AdminController::class, 'Investment'])->name('admin.investment');
+        Route::get('/campaigns', [AdminController::class, 'Campaigns'])->name('admin.campaigns');
         Route::get('/wishlists-category', [AdminController::class, 'wishlistsCats'])->name('admin.wish_cats');
         Route::get('/wishes-items', [AdminController::class, 'wishesItems'])->name('admin.wish_items');
         Route::match(['get', 'post'], '/{modelname}/process',[AdminAjax::class, 'index']);

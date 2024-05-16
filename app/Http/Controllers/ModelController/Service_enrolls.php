@@ -4,39 +4,10 @@ namespace App\Http\Controllers\ModelController;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use App\Models\AdminModel\Campaign_type;
-
-class Campaign_types extends Controller
+use App\Models\UserModel\Service_enroll;
+class Service_enrolls extends Controller
 {
-    //
-
-    public function add($request)
-    {
-        $s = 0;
-        $m = "";
-
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string',
-       
-        ]);
-
-        if ($validator->fails()) {
-            $m = $validator->errors()->first();
-        } else {
-            
-
-            $user = new Campaign_type();
-            $user->title = $request->title;
-            $user->description = $request->description;
-            $user->save();
-            $s = 1;
-            $m = "You have successfully added a Campaign Type";
-        }
-
-        return ['m' => $m, 's' => $s];
-    }
-
+    
     public function list($request) 
     {
         
@@ -50,32 +21,41 @@ class Campaign_types extends Controller
     
         $filterData = $request->input('filterdata');
     
-        $query = Campaign_type::query();
+        $query = Service_enroll::query()
+        ->join('services as s', 'se.service_id', '=', 's.id')
+        ->join('users as b', 'se.buyer_id', '=', 'b.id')
+        ->join('users as u', 's.user_id', '=', 'u.id')
+        ->selectRaw('se.*, u.username as username, b.username as buyername, s.image as s_img, s.img_folder as s_img_folder, s.title');
+
+        ;
+    
     
         if ($filterData == 'Draft') {
-            $query->where('status', 0);
+            $query->where('se.status', 0);
         } elseif ($filterData == 'Actived') {
-            $query->where('status', 1);
+            $query->where('se.status', 1);
         }
     
         if (!empty($searchValue)) {
-            $query->where('title', 'LIKE', "%$searchValue%");
+            $query->where('s.title', 'LIKE', "%$searchValue%");
         }
     
-        $columns = ['id', 'title', 'status', 'created_at'];
+        $columns = ['se.id', 's.title', 'se.status', 'se.created_at'];
         $orderColumn = $columns[$orderColumnIndex] ?? $columns[0];
         $orderDirection = isset($orderDirection) ? $orderDirection : 'desc';
     
         $query->orderBy($orderColumn, $orderDirection);
     
-        $totalRecords = Campaign_type::count();
+        $totalRecords = Service_enroll::count();
     
         $results = $query->skip($start)->take($length)->get();
         $totalFiltered = ($searchValue != '') ? $results->count() : $totalRecords;
     
         $data = [];
         foreach ($results as $row) {
-            $status = $row->status == 1 ? '<span class="badge bg-label-primary me-1">Active</span>' : '<span class="badge bg-label-warning me-1">Inactive</span>';
+
+            $image = '<img src="/images/'.$row->s_img_folder.$row->s_img.'" class="thumbnail" width="60" height="60"/>';
+            $status = $row->status == 1 ? '<span class="badge bg-label-primary me-1">Completed</span>' : '<span class="badge bg-label-warning me-1">On Progress</span>';
 
             
 
@@ -95,10 +75,17 @@ class Campaign_types extends Controller
                 <li><a data-id="' . $row->id . '" class="dropdown-item waves-effect waves-light text-danger delete " href="#">Delete</a></li>
             </ul>
         </div>';
+
+        $title = '<a href="javascript:void(0)" class="service_details" data-title="'.$row->title.'" data-price="'.$row->price.'" data-username="'.$row->username.'" data-delivery="'.$row->delivery_day.'" data-status="'.$row->status.'" data-cat_title="'.$row->cat_title.'" data-acquire="'.$row->tc.'" data-date="'.$row->created_at->format('d M, Y').'" data-description="'.htmlspecialchars($row->title).'" data-image="/images/'.$row->img_folder.$row->image.'">'.$row->title.'</a>';
     
             $rowData = [
                $row->id,
-               $row->title,
+               $image,
+               $title,
+               $row->username,
+               CUR.$row->price,
+               $row->delivery_day,
+               $row->tc,
                $status,
                $dropDown,
                $row->created_at->format('d M, Y')
@@ -119,12 +106,13 @@ class Campaign_types extends Controller
     }
 
 
+
     public function toStatus($request) {
         $s = 0;
         $errors = [];
         $type = $request->type;
         $ids = $request->ids;
-        $table = 'Campaign type';
+        $table = 'Services';
         if (Admin('superAdmin') != 1) {
             $m = "Unauthorized action";
         } else {
@@ -142,7 +130,7 @@ class Campaign_types extends Controller
                             if(!$id) {
                                 continue;
                             }
-                          $user = Campaign_type::find($id);
+                          $user = Service_enroll::find($id);
                           $user->status = 1;
                           $user->save();
                           $total++;
@@ -161,7 +149,7 @@ class Campaign_types extends Controller
                             if(!$id) {
                                 continue;
                             }
-                          $user = Campaign_type::find($id);
+                          $user = Service_enroll::find($id);
                           $user->status = 0;
                           $user->save();
                           $total++;
@@ -180,7 +168,7 @@ class Campaign_types extends Controller
                             if(!$id) {
                                 continue;
                             }
-                          $user = Campaign_type::find($id);
+                          $user = Service_enroll::find($id);
                           $user->delete();
                           $total++;
                             
@@ -194,21 +182,21 @@ class Campaign_types extends Controller
                         }
                         break;
                     case 'draft':
-                        $user = Campaign_type::find($ids);
+                        $user = Service_enroll::find($ids);
                         $user->status = 0;
                         $user->save();
                         $s = 1; 
                         $m = "Item was successfully updated";
                         break;
                     case 'activate':
-                        $user = Campaign_type::find($ids);
+                        $user = Service_enroll::find($ids);
                         $user->status = 1;
                         $user->save();
                         $s = 1; 
                         $m = "Item was successfully updated";
                         break; 
                     case 'delete':
-                        $user = Campaign_type::find($ids);
+                        $user = Service_enroll::find($ids);
                         $s = 1; 
                         $m = "Item was successfully deleted";
                         break;
@@ -223,45 +211,4 @@ class Campaign_types extends Controller
         
         return ['m' => $m, 's' => $s];
     }
-
-
-    public function edit($request) {
-        $s = 0;
-    
-     
-            $validator = Validator::make($request->all(), [
-                'title' => 'required|string',
-
-            ]);
-    
-            if( $validator->fails() ) {
-                $m = $validator->errors()->first();
-            } else {
-    
-                try {
-                    
-                    $campaign = Campaign_type::find($request->id);
-                    $campaign->title = $request->title;
-                    $campaign->description = $request->description;
-                    $campaign->save();
-                    $s = 1;
-                    $m = "Edited Successfully ";
-                } catch (\Exception $e) {
-                    $m = "Error. ".$e->getMessage();
-                }
-    
-            }
-    
-        
-    
-        return ['m' => $m, 's' => $s];
-    }
-
-
-    public function getRow($request) {
-        $campaign = Campaign_type::find($request->id);
-        return $campaign;
-    }
-
-
 }
