@@ -25,7 +25,8 @@ class Service_enrolls extends Controller
         ->join('services as s', 'se.service_id', '=', 's.id')
         ->join('users as b', 'se.buyer_id', '=', 'b.id')
         ->join('users as u', 's.user_id', '=', 'u.id')
-        ->selectRaw('se.*, u.username as username, b.username as buyername, s.image as s_img, s.img_folder as s_img_folder, s.title');
+        ->selectRaw('se.*, u.username as username, b.username as buyername, s.description, s.delivery_day, s.image as s_img, s.img_folder as s_img_folder, s.title')
+        ->from('service_enrolls as se');
 
         ;
     
@@ -66,26 +67,30 @@ class Service_enrolls extends Controller
           <ul class="dropdown-menu dropdown-menu-end" style="">';
     
             if ($row->status != 1) {
-                $dropDown .= '<li><a class="dropdown-item waves-effect waves-light activate" data-id="' . $row->id . '" href="#">Activate</a></li>';
+                $dropDown .= '<li><a class="dropdown-item waves-effect waves-light activate" data-id="' . $row->id . '" href="#">Complete it</a></li>';
+                
+                
             } else {
-                $dropDown .= '<li><a class="dropdown-item waves-effect waves-light text-warning draft" href="#" data-id="'.$row->id.'">Draft</a></li>';
+                $dropDown .= '<li><a class="dropdown-item waves-effect waves-light text-warning draft" href="#" data-id="'.$row->id.'">Unfinish</a></li>';
+                $dropDown .= '<li><a class="dropdown-item waves-effect waves-light admin_proof"  data-id="' . $row->id . '" href="javascript:void(0)" data-title="'.$row->title.'" data-transactionid="'.$row->transaction_id.'" data-proof="'.$row->proof_work.'" data-image="/images/'.$row->img_folder.$row->image.'">Proof</a></li>';
+                
             }
-    
+            $dropDown .= '<li><a class="dropdown-item waves-effect waves-light  admin_requirement" href="javascript:void(0)" data-id="'.$row->id.'" data-title="'.$row->title.'" data-image="/images/'.$row->s_img_folder.$row->s_img.'" data-requirement="'.$row->requirements.'">Requirement</a></li>';
             $dropDown .= '<a class="dropdown-item waves-effect waves-light text-info edit" href="/admin/edit-user/' . $row->id . '">Edit</a></li>
                 <li><a data-id="' . $row->id . '" class="dropdown-item waves-effect waves-light text-danger delete " href="#">Delete</a></li>
             </ul>
         </div>';
 
-        $title = '<a href="javascript:void(0)" class="service_details" data-title="'.$row->title.'" data-price="'.$row->price.'" data-username="'.$row->username.'" data-delivery="'.$row->delivery_day.'" data-status="'.$row->status.'" data-cat_title="'.$row->cat_title.'" data-acquire="'.$row->tc.'" data-date="'.$row->created_at->format('d M, Y').'" data-description="'.htmlspecialchars($row->title).'" data-image="/images/'.$row->img_folder.$row->image.'">'.$row->title.'</a>';
+        $title = '<a href="javascript:void(0)" class="enroll_service_details" data-title="'.$row->title.'" data-price="'.$row->price.'" data-username="'.$row->username.'" data-buyername="'.$row->buyername.'" data-quantity="'.$row->quantity.'" data-total="'.$row->total.'" data-delivery="'.$row->delivery_day.'" data-status="'.$row->status.'" data-transactionid="'.$row->transaction_id.'" data-date="'.$row->created_at->format('d M, Y').'" data-description="'.htmlspecialchars($row->description).'" data-image="/images/'.$row->s_img_folder.$row->s_img.'">'.$row->title.'</a>';
     
             $rowData = [
                $row->id,
                $image,
                $title,
                $row->username,
+               $row->buyername,
                CUR.$row->price,
                $row->delivery_day,
-               $row->tc,
                $status,
                $dropDown,
                $row->created_at->format('d M, Y')

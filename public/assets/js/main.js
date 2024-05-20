@@ -497,6 +497,64 @@ $(document).ready(function() {
 
 
           } );
+
+          // SERVICE PROOF
+          $(document).on('click', '.admin_proof', function(e) {
+
+            var text = $(this).data('proof');
+            console.log(text);
+            var img = new Image();
+            img.src = $(this).data('image');
+            img.style.maxWidth = "100%";
+            $("#proof_img").empty();
+            $("#proof_img").append(img);
+            $("#proof_title").text($(this).data('title'));
+            $("#proof_text").text(text);
+            
+            $("#proof_details").modal('show');
+          });
+
+          // SERVICE REQUIREMENT
+          $(document).on('click', '.admin_requirement', function(e) {
+
+            var img = new Image();
+            img.src = $(this).data('image');
+            img.style.maxWidth = "100%";
+            $("#require_img").empty();
+            $("#require_img").append(img);
+            $("#require_title").text($(this).data('title'));
+            $("#require_text").text($(this).data('requirement'));
+            $("#require_details").modal('show');
+          });
+
+          // SERVICE ENROLLED 
+          $(document).on('click', '.enroll_service_details', function(e) {
+
+            var img = new Image();
+            img.src = $(this).data('image');
+            img.style.maxWidth = "100%";
+
+            var status = $(this).data('status');
+            $("#se_img").empty();
+            $("#se_img").append(img);
+            $("#se_title").text($(this).data('title'));
+            $("#se_price").text($(this).data('price'));
+            $("#se_quantity").text($(this).data('quantity'));
+            $("#se_total").text($(this).data('total'));
+            $("#se_title").text($(this).data('title'));
+            $("#se_user").text($(this).data('username'));
+            $("#se_buyer").text($(this).data('buyername'));
+            $("#se_transactionid").text($(this).data('transactionid'));
+            $("#se_delivery").text($(this).data('delivery'));
+            if(status == 1) {
+              $("#se_status").text('Completed');
+            } else {
+              $("#se_status").text('On Progress');
+            }
+            $("#se_desc").html($(this).data('description'));
+            $("#se_date").text($(this).data('date'));
+            $("#service_enroll_modal").modal('show');
+          });
           
 
 

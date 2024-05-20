@@ -15,7 +15,7 @@
     <!-- Basic Bootstrap Table -->
     <div class="card">
     
-    <div id="model" data-name="services"></div>
+    <div id="model" data-name="service_enrolls"></div>
 
     
 
@@ -55,6 +55,7 @@
               <th>Image </th>
               <th>Title</th>
               <th>User </th>
+              <th>Buyer </th>
               <th>Price</th>
               <th>Delivery</th>
               <th>Status</th>
@@ -69,11 +70,11 @@
   </div>
 
 
-  <div class="modal fade" id="service_details_modal" tabindex="-1" aria-hidden="true">
+  <div class="modal fade" id="service_enroll_modal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="inv_title"></h5>
+          <h5 class="modal-title" id="se_title"></h5>
           <button
             type="button"
             class="btn-close"
@@ -85,50 +86,131 @@
         <div class="modal-body">
           <div class="row">
             <div class="col-12">
-                <p id="sd_img"></p>
+                <p id="se_img"></p>
             </div>
             <div class="col-sm-6 col-md-6">
               <span>Price</span>
-              <p id="inv_goal"></p>
+              <p id="se_price"></p>
             </div>
 
             <div class="col-sm-6 col-md-6">
-              <span>Total Bought</span>
-              <p id="inv_amount"></p>
+              <span>Quantity</span>
+              <p id="se_quantity"></p>
             </div>
 
             <div class="col-sm-6 col-md-6">
-              <span>User</span>
-              <p id="inv_shared"></p>
+              <span>Total</span>
+              <p id="se_toal"></p>
             </div>
 
             <div class="col-sm-6 col-md-6">
-                <span>Category</span>
-                <p id="inv_category"></p>
+                <span>User</span>
+                <p id="se_user"></p>
               </div>
 
             
 
             <div class="col-sm-6 col-md-6">
-              <span>Creation Date</span>
-              <p id="inv_cre_date"></p>
+              <span>Buyer</span>
+              <p id="se_buyer"></p>
             </div>
+
+            <div class="col-sm-6 col-md-6">
+                <span>Transaction id</span>
+                <p id="se_transactionid"></p>
+              </div>
 
             <div class="col-sm-6 col-md-6">
               <span>Delivery Day</span>
-              <p id="inv_end_date"></p>
+              <p id="se_delivery"></p>
             </div>
 
             <div class="col-sm-6 col-md-6">
+                <span>Acquire date</span>
+                <p id="se_date"></p>
+              </div>
+
+            <div class="col-sm-6 col-md-6">
               <span>Status</span>
-              <p id="inv_pr_status"></p>
+              <p id="se_status"></p>
             </div>
             <div class="col-sm-12">
               <h2 class="mt-3">Description</h2>
-              <p id="inv_description"></p>
+              <p id="se_desc"></p>
             </div>
 
 
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            Close
+          </button>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="proof_details" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="proof_title"></h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+       
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12">
+                <h3> Image Proof </h3>
+                <p id="proof_img"></p>
+            </div>
+            <div class="col-sm-12">
+              <h3>Text Proof</h3>
+              <p id="proof_text"></p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            Close
+          </button>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="require_details" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="require_title"></h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+       
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12">
+                <h3> Image </h3>
+                <p id="require_img"></p>
+            </div>
+            <div class="col-sm-12">
+              <h3>Requirement</h3>
+              <p id="require_text"></p>
+            </div>
           </div>
         </div>
         <div class="modal-footer">
