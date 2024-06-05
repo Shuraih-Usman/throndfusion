@@ -51,11 +51,20 @@ class AdminAjax extends Controller
             return response()->json($adding);
         } else if($action == 'list') {
 
-            $ModeName = ucfirst($modelname);
-            $class = "\App\Http\Controllers\ModelController\\$ModeName";
-            $List = new $class();
-            $data = $List->list($request);
-            return response()->json($data);
+            if($modelname == 'transactions') {
+                $class =  new \App\Http\Controllers\ModelController\Wallets;
+                $list = $class->Transactions($request);
+                return response()->json($list);
+            } else {
+
+                $ModeName = ucfirst($modelname);
+                $class = "\App\Http\Controllers\ModelController\\$ModeName";
+                $List = new $class();
+                $data = $List->list($request);
+                return response()->json($data);
+            }
+
+
         } else if($action == 'settingStatus') {
 
             $ModeName = ucfirst($modelname);

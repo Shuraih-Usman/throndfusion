@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Models\UserModel;
+namespace App\Models\AdminModel;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
-class Campaign extends Model
+
+class Payment extends Model
 {
     use HasFactory;
 
     public function user() {
-
         return $this->belongsTo(User::class);
     }
 }

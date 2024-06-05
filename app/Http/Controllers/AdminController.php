@@ -67,4 +67,16 @@ class AdminController extends Controller
       public function wishesItems() {
         return view('admin.wish.items');
     }
+
+    public function WithdrawalRequests() {
+        return view('admin.wallet.index');
+    }
+
+        public function Transactions() {
+        return view('admin.wallet.transactions');
+    }
+
+            public function Payments() {
+        return view('admin.wallet.payments');
+    }
 }

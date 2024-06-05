@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\UserModel\Service;
 use Illuminate\Support\Str;
+use App\Helpers\ActivityLog;
 use Carbon\Carbon;
 class Services extends Controller
 {
@@ -58,6 +59,7 @@ class Services extends Controller
                     DB::commit();
                     $s = 1;
                     $m = "You successfully submitted a Service.";
+                    ActivityLog::log('Services', Admin('id'), $m);
                 } catch (\Exception $e) {
                     DB::rollBack();
                     $m = "An error occurred while submitting. Please contact admins.";
@@ -193,6 +195,7 @@ class Services extends Controller
                         if($total > 0) {
                             $s = 1;
                             $m = "$total $table where successfully Activated";
+                            ActivityLog::log($table, Admin('id'), $m);
                         } else {
                             $m = "Failed to activate items";
                         }
@@ -212,6 +215,7 @@ class Services extends Controller
                         if($total > 0) {
                             $s = 1;
                             $m = "$total $table where successfully Close";
+                            ActivityLog::log($table, Admin('id'), $m);
                         } else {
                             $m = "Failed to close items";
                         }
@@ -222,6 +226,7 @@ class Services extends Controller
                         $user->save();
                         $s = 1; 
                         $m = "Item was successfully updated";
+                        ActivityLog::log($table, Admin('id'), $m);
                         break;
                     case 'activate':
                         $user = Service::find($ids);
@@ -229,6 +234,7 @@ class Services extends Controller
                         $user->save();
                         $s = 1; 
                         $m = "Item was successfully updated";
+                        ActivityLog::log($table, Admin('id'), $m);
                         break;
                      case 'delete':
                         $user = Service::find($ids);
@@ -237,6 +243,7 @@ class Services extends Controller
                         $user->delete();
                         $s = 1; 
                         $m = "Item was deleted successfully";
+                        ActivityLog::log($table, Admin('id'), $m);
                         break;                   
                     default:
                         $m = "Undefined action";
@@ -305,7 +312,8 @@ class Services extends Controller
                     $campaign->save();
                     DB::commit();
                     $s = 1;
-                    $m = "Edited Successfully ";
+                    $m = "Edited Successfully ID:" .$request->id;
+                    ActivityLog::log('Service', Admin('id'), $m);
                 } catch (\Exception $e) {
                     DB::rollBack();
                     $m = "An error occurred while submitting the project. Please contact admins. ".$e->getMessage();
@@ -433,8 +441,8 @@ class Services extends Controller
             $service->status = 2;
             $service->save();
             $s = 1;
-            $m = "You successfully finished and delivered this service pls wait to the buyer to confirm and release payment";
-
+            $m = "You successfully finished and delivered this service pls wait to the buyer to confirm and release payment: ID ".$data->id;
+            ActivityLog::log('Service', Admin('id'), $m);
         }
 
         return ['m' => $m, 's' => $s];
@@ -548,8 +556,9 @@ class Services extends Controller
                 $adding = $user->balance + $paying;
                 $user->balance = $adding;
                 $user->save();
-                $m = "Successfully approved this service";
+                $m = "Successfully approved this service with id $data->id";
                 $s = 1;
+                ActivityLog::log('Service', Admin('id'), $m);
             }
         } else {
             $m = "Service not found";

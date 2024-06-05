@@ -107,6 +107,22 @@ class MainController extends Controller
         }
     }
 
+    public function campaignView($id) {
+        $campaign = Campaign::find($id);
+
+        if(!$campaign) {
+            return view('404');
+        } else {
+
+            $row = Campaign::query()
+                        ->where('id', '=', $id)
+                        ->where('status', '=', $id)
+                        ->with(['users:id,username,balance'])
+                        ->first()
+                        ->get();
+        }
+    }
+
     public function serviceView($id) 
     {
 

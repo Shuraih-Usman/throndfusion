@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Models\UserModel\Conversation;
+use App\Models\AdminModel\Payment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -56,5 +57,14 @@ class User extends Authenticatable
 
     public function conversation2() {
         return $this->hasMany(Conversation::class, 'user_id_2');
+    }
+
+    public function payment() {
+        return $this->hasMany(Payment::class);
+    }
+
+    public function campaign() {
+        $class = new \App\Models\UserModel\campaign;
+        return $this->hasMany($class::class);
     }
 }

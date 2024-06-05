@@ -8,6 +8,7 @@ use App\Models\UserModel\Wallet;
 use App\Models\AdminModel\Withdraw_request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\ActivityLog;
 
 class Wallets extends Controller
 {
@@ -122,6 +123,7 @@ class Wallets extends Controller
                     DB::commit();
                     $s = 1;
                     $m = TEXT['s_u_withraw'];
+                    ActivityLog::log('Wallet', Admin('id'), $m);
                 }  catch(\Exception $e) {
                     DB::rollBack();
                     $m = $e->getMessage();

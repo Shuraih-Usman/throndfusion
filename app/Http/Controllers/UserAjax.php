@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\ActivityLog;
 use Illuminate\Validation\ValidationException;
 class UserAjax extends Controller
 {
@@ -167,6 +168,10 @@ class UserAjax extends Controller
             $List = new $class();
             $data = $List->approve_service($request);
             return response()->json($data);
+        } else if($action == 'updatebank') {
+            $userClass = new \App\Http\Controllers\UserModelController\Users;
+            $data = $userClass->bankDetails($request);
+            return response()->json($data);
         }
         
     }
@@ -180,6 +185,7 @@ class UserAjax extends Controller
         if(Auth::attempt($cred)) {
             $m = "Successfully Login";
             $s = 1;
+            ActivityLog::log('Payment', Admin('id'), $m);
             Session::flash('login', 'You successfully Login.');
             return redirect()->intended('/user/dashboard');
         } else {

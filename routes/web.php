@@ -23,6 +23,9 @@ Route::get('/', [MainController::class,'index'])->name('home');
 Route::get('/service/{id}', [MainController::class,'serviceView']);
 
 Route::prefix('/admin')->namespace('App\Http\Controllers\AdminController')->group(function() {
+    Route::get('/', function () {
+        return redirect()->route('admin.login');
+    });
     Route::get('login', [ AdminController::class, 'loginPage'])->name('admin.login');
     Route::post('login', [AdminAjax::class, 'handleLogin']);
     Route::get('logout', [AdminAjax::class, 'handleLogout'])->name('admin.logout');
@@ -40,6 +43,9 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\AdminController')->grou
         Route::get('/campaigns', [AdminController::class, 'Campaigns'])->name('admin.campaigns');
         Route::get('/wishlists-category', [AdminController::class, 'wishlistsCats'])->name('admin.wish_cats');
         Route::get('/wishes-items', [AdminController::class, 'wishesItems'])->name('admin.wish_items');
+        Route::get('/withdrawal-requests', [AdminController::class, 'WithdrawalRequests'])->name('admin.withd-re');
+        Route::get('/transactions', [AdminController::class, 'Transactions'])->name('admin.transactions');
+        Route::get('/payments', [AdminController::class, 'Payments'])->name('admin.payments');
         Route::match(['get', 'post'], '/{modelname}/process',[AdminAjax::class, 'index']);
     });
 });
@@ -97,6 +103,9 @@ Route::prefix('/user')->group(function() {
         Route::get('messages', [UserController::class, 'Messages'])->name('users.messages');
         Route::get('service-requirement', [UserController::class, 'ServiceRequirement']);
         Route::get('wallet', [UserController::class, 'Wallet'])->name('wallet');
+        Route::get('profile', [UserController::class, 'Profile'])->name('profile');
+        Route::get('edit-profile', [UserController::class, 'editProfile'])->name('edit-profile');
+        Route::get('edit-bank', [UserController::class, 'editBank'])->name('edit-bank');
         Route::get('dashboard', function() {
             return "YEYEYEYEYEY";
         });

@@ -397,7 +397,9 @@
   
     $(document).on('submit', '#addform', function(e) {
       e.preventDefault();
-  
+
+      console.log('yes');
+      
       const formData = new FormData($(this)[0]);
       Request(ajaxURL, formData, 'addform');
     });

@@ -1,3 +1,11 @@
+@php
+    use App\Models\AdminModel\Wallet;
+
+    $wallet = Wallet::where('type', 'widthrawal')
+                      ->where('status', 2)
+                      ->count();
+@endphp
+
 <!DOCTYPE html>
 
 <html
@@ -341,6 +349,58 @@
                 <li class="menu-item">
                   <a href="{{route('admin.investment')}}" class="menu-link">
                     <div data-i18n="Investments">Investments</div>
+                  </a>
+                </li>
+              
+              </ul>
+            </li>
+
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-money"></i>
+                <div data-i18n="Layouts">Payments</div>
+              </a>
+
+              <ul class="menu-sub">
+
+                <li class="menu-item">
+                  <a href="{{route('admin.payments')}}" class="menu-link">
+                    <div data-i18n="Payment Records">Payment Records</div>
+                  </a>
+                </li>
+
+                <li class="menu-item">
+                  <a href="{{route('admin.transactions')}}" class="menu-link">
+                    <div data-i18n="Transactions">Transactions</div>
+                  </a>
+                </li>
+
+                <li class="menu-item">
+                  <a href="{{route('admin.withd-re')}}" class="menu-link">
+                    <div data-i18n="Withdrawal Requests">Withdrawal  <span class="badge bg-danger">{{$wallet}} </span></div>
+                  </a>
+                </li>
+              
+              </ul>
+            </li>
+
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-gift"></i>
+                <div data-i18n="Layouts">Wishes</div>
+              </a>
+
+              <ul class="menu-sub">
+
+                <li class="menu-item">
+                  <a href="{{route('admin.wish_items')}}" class="menu-link">
+                    <div data-i18n="Items">Items</div>
+                  </a>
+                </li>
+
+                <li class="menu-item">
+                  <a href="{{route('admin.wish_cats')}}" class="menu-link">
+                    <div data-i18n="Wishes Category">Wishes Category</div>
                   </a>
                 </li>
               

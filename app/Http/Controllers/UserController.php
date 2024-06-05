@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
 class UserController extends Controller
 {
     //
@@ -62,5 +63,24 @@ class UserController extends Controller
             }
 
         }
+    }
+
+
+    public function Profile() {
+        $row = User::find(Admin('id'));
+
+        return view('user.profile.index', compact('row'));
+    }
+
+    public function editProfile() {
+        $user = User::find(Admin('id'));
+
+        return view('user.profile.edit', compact('user'));
+    }
+
+    public function editBank() {
+        $user = User::find(Admin('id'));
+
+        return view('user.profile.bank', compact('user'));
     }
 }
