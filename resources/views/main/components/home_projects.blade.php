@@ -136,8 +136,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" id="_capm_submit" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary m-3" data-izimodal-close="" data-izimodal-transitionout="bounceOutDown">Close</button>
+                <button type="button" id="_capm_submit" class="btn btn-primary" >Save changes</button>
             </div>
         </div>
 

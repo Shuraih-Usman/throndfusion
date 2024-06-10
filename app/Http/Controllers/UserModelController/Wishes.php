@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\UserModel\Wishe;
 use Illuminate\Support\Str;
-use App\Helpers\ActivityLog;
+use App\Helpers\ActivityLogHelper;
 class Wishes extends Controller
 {
     //
@@ -58,7 +58,7 @@ class Wishes extends Controller
                     DB::commit();
                     $s = 1;
                     $m = "You successfully submitted a Wish.";
-                    ActivityLog::log('Wishes', Admin('id'), $m);
+                    ActivityLogHelper::log('Wishes', Admin('id'), $m);
                 } catch (\Exception $e) {
                     DB::rollBack();
                     $m = "An error occurred while submitting. Please contact admins.";
@@ -215,7 +215,7 @@ class Wishes extends Controller
                         if($total > 0) {
                             $s = 1;
                             $m = "$total $table where successfully Close";
-                            ActivityLog::log('Wishes', Admin('id'), $m);
+                            ActivityLogHelper::log('Wishes', Admin('id'), $m);
                         } else {
                             $m = "Failed to close items";
                         }
@@ -226,7 +226,7 @@ class Wishes extends Controller
                         $user->save();
                         $s = 1; 
                         $m = "Item was successfully updated";
-                        ActivityLog::log('Wishes', Admin('id'), $m);
+                        ActivityLogHelper::log('Wishes', Admin('id'), $m);
                         break;
                     case 'activate':
                         $user = Wishe::find($ids);
@@ -234,7 +234,7 @@ class Wishes extends Controller
                         $user->save();
                         $s = 1; 
                         $m = "Item was successfully updated";
-                        ActivityLog::log('Wishes', Admin('id'), $m);
+                        ActivityLogHelper::log('Wishes', Admin('id'), $m);
                         break;
                      case 'delete':
                         $user = Wishe::find($ids);
@@ -242,7 +242,7 @@ class Wishes extends Controller
                         $user->delete();
                         $s = 1; 
                         $m = "Item was deleted successfully";
-                        ActivityLog::log('Wishes', Admin('id'), $m);
+                        ActivityLogHelper::log('Wishes', Admin('id'), $m);
                         break;                   
                     default:
                         $m = "Undefined action";
@@ -309,7 +309,7 @@ class Wishes extends Controller
                     $s = 1;
                     $m = "Edited Successfully ID: ".$request->id;
                     
-                    ActivityLog::log('Wishes', Admin('id'), $m);
+                    ActivityLogHelper::log('Wishes', Admin('id'), $m);
                 } catch (\Exception $e) {
                     DB::rollBack();
                     $m = "An error occurred while submitting the project. Please contact admins. ".$e->getMessage();

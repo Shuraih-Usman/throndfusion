@@ -21,6 +21,10 @@
             <li class="nav-item">
               <a class="nav-link active" href="javascript:void(0);"><i class="bx bxs-bank me-1"></i> Update Bank Details</a>
             </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="{{route('changepass')}}"><i class="bx bxs-user me-1"></i>Change Password</a>
+            </li>
           </ul>
         
         <div class="col-xl">

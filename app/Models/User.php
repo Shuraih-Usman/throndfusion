@@ -6,6 +6,8 @@ namespace App\Models;
 
 use App\Models\UserModel\Conversation;
 use App\Models\AdminModel\Payment;
+use App\Models\UserModel\Rate;
+use App\Models\AdminModel\Activity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -66,5 +68,21 @@ class User extends Authenticatable
     public function campaign() {
         $class = new \App\Models\UserModel\campaign;
         return $this->hasMany($class::class);
+    }
+
+    public function activity() {
+        
+        return $this->hasMany(Activity::class);
+    }
+
+
+    public function ratings()
+    {
+        return $this->hasMany(Rate::class, 'user_id');
+    }
+
+    public function creatorID()
+    {
+        return $this->hasMany(Rate::class, 'creator_id');
     }
 }

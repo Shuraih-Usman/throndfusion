@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\UserModel\Campaign;
-use App\Helpers\ActivityLog;
+use App\Helpers\ActivityLogHelper;
 class Campaigns extends Controller
 {
     //
@@ -60,7 +60,7 @@ class Campaigns extends Controller
                     DB::commit();
                     $s = 1;
                     $m = "You successfully submitted a project. Please wait for Admin to confirm and approve it.";
-                    ActivityLog::log('campaign', Admin('id'), $m);
+                    ActivityLogHelper::log('campaign', Admin('id'), $m);
                 } catch (QueryException $e) {
                     DB::rollBack();
                     $m = "An error occurred while submitting the project. Please contact admins.";
@@ -354,7 +354,7 @@ class Campaigns extends Controller
                         if($total > 0) {
                             $s = 1;
                             $m = "$total $table where successfully Activated";
-                            ActivityLog::log($table, Admin('id'), $m);
+                            ActivityLogHelper::log($table, Admin('id'), $m);
                         } else {
                             $m = "Failed to activate items";
                         }
@@ -374,7 +374,7 @@ class Campaigns extends Controller
                         if($total > 0) {
                             $s = 1;
                             $m = "$total $table where successfully Close";
-                            ActivityLog::log($table, Admin('id'), $m);
+                            ActivityLogHelper::log($table, Admin('id'), $m);
                         } else {
                             $m = "Failed to close items";
                         }
@@ -385,7 +385,7 @@ class Campaigns extends Controller
                         $user->save();
                         $s = 1; 
                         $m = "Item was successfully updated";
-                        ActivityLog::log($table, Admin('id'), $m);
+                        ActivityLogHelper::log($table, Admin('id'), $m);
                         break;
                     case 'activate':
                         $user = Campaign::find($ids);
@@ -393,7 +393,7 @@ class Campaigns extends Controller
                         $user->save();
                         $s = 1; 
                         $m = "Item was successfully updated";
-                        ActivityLog::log($table, Admin('id'), $m);
+                        ActivityLogHelper::log($table, Admin('id'), $m);
                         break;
                     default:
                         $m = "Undefined action";
@@ -444,7 +444,7 @@ class Campaigns extends Controller
                     DB::commit();
                     $s = 1;
                     $m = "Edited Successfully ";
-                    ActivityLog::log('campaign', Admin('id'), $m);
+                    ActivityLogHelper::log('campaign', Admin('id'), $m);
                 } catch (QueryException $e) {
                     DB::rollBack();
                     $m = "An error occurred while submitting the project. Please contact admins. ".$e->getMessage();

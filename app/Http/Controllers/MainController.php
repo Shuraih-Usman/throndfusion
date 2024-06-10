@@ -10,12 +10,69 @@ use App\Models\User;
 use App\Models\UserModel\Service;
 use App\Models\UserModel\Wishe;
 use App\Models\UserModel\Campaign;
+use App\Models\UserModel\Wallet;
 use App\Models\UserModel\Message;
 use App\Models\AdminModel\Donation;
 use App\Models\AdminModel\Investing;
+use App\Models\UserModel\Rate;
+use App\Helpers\ActivityLogHelper;
 class MainController extends Controller
 {
     //
+
+
+    public function Account() {
+
+    }
+
+    public function Review($id) {
+
+        $user = User::find($id);
+        $user_id = $id;
+        $averageRating = Rate::where('creator_id', $user_id)->avg('rate');
+        $sumRate = Rate::where('creator_id', $user_id)->sum('rate');
+        $average = Rate::with('user')->where('creator_id', $user_id)->paginate(10);
+
+        return view('main.view.review', compact('user', 'averageRating', 'average', 'sumRate'));
+
+    }
+
+    public function ServicePage() {
+        $services = Service::query()
+        ->where('services.status', 1)
+                    ->join('service_cats', 'services.service_cat_id', '=', 'service_cats.id')
+                    ->join('users', 'services.user_id', '=', 'users.id')
+                    ->select('services.*', 'service_cats.title as cat_title', 'service_cats.id as cat_id', 'users.username', 'users.image_folder as user_folder', 'users.image as user_image', 'users.role')
+                    ->paginate(20);
+        
+        return view('main.view.service_page', compact('services'));
+    }
+
+    public function SearchService(Request $request) {
+        $query = $request->q;
+        $services = Service::query()
+        ->where('services.status', 1)
+                    ->join('service_cats', 'services.service_cat_id', '=', 'service_cats.id')
+                    ->join('users', 'services.user_id', '=', 'users.id')
+                    ->where('services.title', "LIKE", "%$query%")
+                    ->select('services.*', 'service_cats.title as cat_title', 'service_cats.id as cat_id', 'users.username', 'users.image_folder as user_folder', 'users.image as user_image', 'users.role')
+                    ->paginate(20);
+        
+        return view('main.view.search_service', compact('services', 'query'));
+    }
+
+    public function Cats($id) {
+        $catsname =  getRowData('service_cats', 'title', $id);
+        $services = Service::query()
+        ->where('services.status', 1)
+                    ->join('service_cats', 'services.service_cat_id', '=', 'service_cats.id')
+                    ->join('users', 'services.user_id', '=', 'users.id')
+                    ->where('services.service_cat_id', '=', $id)
+                    ->select('services.*', 'service_cats.title as cat_title', 'service_cats.id as cat_id', 'users.username', 'users.image_folder as user_folder', 'users.image as user_image', 'users.role')
+                    ->paginate(20);
+        
+        return view('main.view.cats_page', compact('services', 'catsname'));
+    }
 
     public function index() {
         $service = Service::query()
@@ -120,6 +177,8 @@ class MainController extends Controller
                         ->with(['users:id,username,balance'])
                         ->first()
                         ->get();
+
+            return view('main.helpers.campaign', compact('row'));
         }
     }
 
@@ -137,8 +196,14 @@ class MainController extends Controller
                 ->join('users', 'services.user_id', '=', 'users.id')
                 ->select('services.*', 'service_cats.title as cat_title', 'users.username', 'users.image_folder as user_i_folder', 'users.image as u_image', 'users.role')
                 ->first();
+
+                $user_id = $service->user_id;
+                $averageRating = Rate::where('creator_id', $user_id)->avg('rate');
+                $average = Rate::with('user')->where('creator_id', $user_id)->limit(5)->get();
+        $sumRate = Rate::where('creator_id', $user_id)->sum('rate');
+
         
-            return view('main.view.service', ['service' => $service]);
+            return view('main.view.service', compact('service', 'averageRating', 'average', 'sumRate'));
         }
         
     }
@@ -196,65 +261,114 @@ class MainController extends Controller
             $id = $request->id;
             $project = Campaign::find($id);
 
-            if($project->type == 1) {
-                $add = new Donation();
+            $user = User::find(Admin('id'));
+
+            
+                if($request->amount > $user->balance) {
+
+                    $m = "Not enought balance to perform this task, pls refill / recharge your wallet account, and try again";
+                } else {
+    
+                    try {
+                        DB::beginTransaction();
+                        $newamount = $user->balance - $request->amount;
+                        $user->balance = $newamount;
+                        $user->save();
+
+                        Wallet::create([
+                            'user_id' => $user->id,
+                            'amount' => $request->amount,
+                            'reference' => time(),
+                            'type' => 'campaign',
+                            'status' => 1,
+                        ]);
+    
+                        if($project->type == 1) {
+                            $add = new Donation();
+
+                            if (empty($request->amount) || $request->amount < 50) {
+                                $m = "You cannot donate anything less than N100";
+                            } else {
+
+                                                            
+                            try {
+            
+                                $add->user_id = Admin('id');
+                                $add->campaign_id = $id;
+                                $add->amount = $request->amount;
+                                $add->status = 1;
+                                $add->save();
+            
+                                try  {
+                                    $project->current_amount += $request->amount;
+                                    $project->save();
+                                    DB::commit();
+                                    $s = 1;
+                                    $m = "You successfully donate $request->amount to this project ID: $id";
+                                    ActivityLogHelper::log('campaign', Admin('id'), $m);
+                                } catch (\Exception $e) {
+                                    $m = "Error 104 occur pls contact support or try again later";
+                                    DB::rollBack();
+                                }
+            
+                            } catch (\Exception $e) {
+                                $m = "Error 105 occur pls contact support or try again later";
+                                DB::rollBack();
+                            }
+                            }
+
+                            
+            
+                        } else if($project->type == 2) {
+                            $add = new Investing();
+
+                            if(empty($request->amount) || $request->amount < 1000) {
+                                $m = "You cannot invest  anything less than N1000";
+                            } else {
+
+                                try {
+            
+                                    $add->user_id = Admin('id');
+                                    $add->campaign_id = $id;
+                                    $add->amount = $request->amount;
+                                    $add->shared = $project->shared_amount;
+                                    $add->stop_date = $project->invest_stop_date;
+                                    $add->status = 1;
+                                    $add->save();
                 
-                try {
-                    DB::beginTransaction();
+                                    try  {
+                                        $project->current_amount += $request->amount;
+                                        $project->save();
+                                        DB::commit();
+                                        $s = 1;
+                                        $m = "You successfully Invest $request->amount to this project ID: $id";
+                                        ActivityLogHelper::log('campaign', Admin('id'), $m);
+                                    } catch (\Exception $e) {
+                                        $m = "Error 103 occur pls contact support or try again later";
+                                        DB::rollBack();
+                                    }
+                
+                                } catch (\Exception $e) {
+                                    $m = "Error 102 occur pls contact support or try again later";
+                                    DB::rollBack();
+                                }
+                            }
+                            
 
-                    $add->user_id = Admin('id');
-                    $add->campaign_id = $id;
-                    $add->amount = $request->amount;
-                    $add->status = 1;
-                    $add->save();
-
-                    try  {
-                        $project->current_amount += $request->amount;
-                        $project->save();
-                        DB::commit();
-                        $s = 1;
-                        $m = "You successfully donate $request->amount to this project";
-                    } catch (\Exception $e) {
-                        $m = "Error 1 :".$e->getMessage();
-                        DB::rollBack();
+                        }
+    
+                    } catch(\Exception $e) {
+                        $m = "Error 101 occur pls contact support or try again later";
+                        DB::rollback();
                     }
-
-                } catch (\Exception $e) {
-                    $m = "Error 2 :".$e->getMessage();
-                    DB::rollBack();
-                }
+    
+     
                 
+            }
 
-            } else if($project->type == 2) {
-                $add = new Investing();
-                
-                try {
-                    DB::beginTransaction();
 
-                    $add->user_id = Admin('id');
-                    $add->campaign_id = $id;
-                    $add->amount = $request->amount;
-                    $add->shared = $project->shared_amount;
-                    $add->stop_date = $project->invest_stop_date;
-                    $add->status = 1;
-                    $add->save();
 
-                    try  {
-                        $project->current_amount += $request->amount;
-                        $project->save();
-                        DB::commit();
-                        $s = 1;
-                        $m = "You successfully Invest $request->amount to this project";
-                    } catch (\Exception $e) {
-                        $m = "Error 1 :".$e->getMessage();
-                        DB::rollBack();
-                    }
 
-                } catch (\Exception $e) {
-                    $m = "Error 2 :".$e->getMessage();
-                    DB::rollBack();
-                }
-            } 
 
             return response()->json(['m' => $m, 's' => $s]);
 

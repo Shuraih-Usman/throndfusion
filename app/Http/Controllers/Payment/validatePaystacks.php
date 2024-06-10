@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Helpers\ActivityLog;
+use App\Helpers\ActivityLogHelper;
 class validatePaystacks extends Controller
 {
     //
@@ -54,7 +54,7 @@ class validatePaystacks extends Controller
                             $pay->save();
                             $m = $data['message'];
                             $s = 1;
-                            ActivityLog::log('Payment', Admin('id'), $m.$reference);
+                            ActivityLogHelper::log('Payment', Admin('id'), $m.$reference);
                         } else {
                             $s = 0;
                             $m = "Unable to update the payment pls contact support";

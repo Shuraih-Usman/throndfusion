@@ -570,6 +570,19 @@ $(document).ready(function() {
             $("#account_details").modal('show');
 
           });
+
+          // activity desc
+
+          $(document).on('click', '.activity', function(e) {
+            e.preventDefault();
+
+            var desc = $(this).data('description');
+
+            $("#description").text(desc);
+
+            $("#view").modal('show');
+
+          });
           
 
 

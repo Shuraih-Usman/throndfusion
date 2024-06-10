@@ -8,9 +8,11 @@
 
         @include('main.components.home_trending_services')
 
+        @include('main.components.home_service')
+
         @include('main.components.home_projects')
 
-        @include('main.components.home_service')
+
 
            
             <section class="trending-podcast-section section-padding pt-0 mb-5">

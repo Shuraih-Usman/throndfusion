@@ -5,6 +5,86 @@
 @endsection
 
 @section('content')
+<style>
+ 
+label {
+  cursor: pointer;
+}
+
+svg {
+  width: 3rem;
+  height: 3rem;
+  padding: 0.15rem;
+}
+
+
+/* hide radio buttons */
+
+input[name="star"] {
+  display: inline-block;
+  width: 0;
+  opacity: 0;
+  margin-left: -2px;
+}
+
+/* hide source svg */
+
+.star-source {
+  width: 0;
+  height: 0;
+  visibility: hidden;
+}
+
+
+/* set initial color to transparent so fill is empty*/
+
+.star {
+  color: transparent;
+  transition: color 0.2s ease-in-out;
+}
+
+
+/* set direction to row-reverse so 5th star is at the end and ~ can be used to fill all sibling stars that precede last starred element*/
+
+.star-container {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
+}
+
+label:hover ~ label .star,
+svg.star:hover,
+input[name="star"]:focus ~ label .star,
+input[name="star"]:checked ~ label .star {
+  color: #fbff08;
+}
+
+input[name="star"]:checked + label .star {
+  animation: starred 0.5s;
+}
+
+input[name="star"]:checked + label {
+  animation: scaleup 1s;
+}
+
+@keyframes scaleup {
+  from {
+    transform: scale(1.2);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes starred {
+  from {
+    color: #cecb06;
+  }
+  to {
+    color: #fbff08;
+  }
+}
+</style>
 <div class="container-xxl flex-grow-1 container-p-y">
     <h4 class="fw-bold py-3 mb-4"><a href="/user/dashboard" class="text-muted fw-light">Dashboard /</a>Service</h4>
 
@@ -459,8 +539,64 @@
             <div class="col-12">
               <h2 class="modal-title mb-2"> Approve </h2>
             </div>
-            <form method="POST" id="addform">
+            <form class="row" method="POST" id="addform">
               @csrf
+              
+              <h4>Rate / Review </h4>
+              <div class="col-sm-6 col-md-6 mt-2">
+                <div class="star-source">
+                  <svg>
+                         <linearGradient x1="50%" y1="5.41294643%" x2="87.5527344%" y2="65.4921875%" id="grad">
+                            <stop stop-color="#bf209f" offset="0%"></stop>
+                            <stop stop-color="#d62a9d" offset="60%"></stop>
+                            <stop stop-color="#ED009E" offset="100%"></stop>
+                        </linearGradient>
+                    <symbol id="star" viewBox="153 89 106 108">   
+                      <polygon id="star-shape" stroke="url(#grad)" stroke-width="5" fill="currentColor" points="206 162.5 176.610737 185.45085 189.356511 150.407797 158.447174 129.54915 195.713758 130.842203 206 95 216.286242 130.842203 253.552826 129.54915 222.643489 150.407797 235.389263 185.45085"></polygon>
+                    </symbol>
+                </svg>
+                
+                </div>
+                <div class="star-container">
+                  <input type="radio" name="star" value="5" id="five">
+                  <label for="five">
+                    <svg class="star">
+                      <use xlink:href="#star"/>
+                    </svg>
+                  </label>
+                  <input type="radio" name="star" value="4" id="four">
+                  <label for="four">
+                    <svg class="star">
+                      <use xlink:href="#star"/>
+                    </svg>
+                  </label>
+                  <input type="radio" name="star" value="3" id="three">
+                  <label for="three">
+                    <svg class="star">
+                      <use xlink:href="#star"/>
+                    </svg>
+                  </label>
+                  <input type="radio" name="star" value="2" id="two">
+                  <label for="two">
+                    <svg class="star">
+                      <use xlink:href="#star" />
+                    </svg>
+                  </label>
+                  <input type="radio" name="star" value="1" id="one" checked>
+                  <label for="one">
+                   <svg class="star">
+                    <use xlink:href="#star" />
+                   </svg>
+                  </label>
+                
+                </div>
+
+               
+              </div>
+              <div class="col-sm-6 col-md-6 mt-2">
+                <label for="desc"> Review</label>
+                <textarea name="review" class="form-control"> </textarea>
+              </div>
             <div class="col-12 mt-2">
               <input type="hidden" name="id" id="enroll_id_2">
               <input type="hidden" name="action" value="approve_service">

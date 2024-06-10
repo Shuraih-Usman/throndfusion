@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
 use \App\Http\Controllers\Payment\Monnify;
-use App\Helpers\ActivityLog;
+use App\Helpers\ActivityLogHelper;
 class payMonnify extends Controller
 {
     //
@@ -30,7 +30,7 @@ class payMonnify extends Controller
                 $pay->monnify_reference = $reference;
                 $pay->save();
                 $m = "You successfully make this payment ";
-                ActivityLog::log('Payment', Admin('id'), $m.$reference);
+                ActivityLogHelper::log('Payment', Admin('id'), $m.$reference);
                 $s = 1;
             } else {
                 $s = 0;

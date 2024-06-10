@@ -1,4 +1,4 @@
-@extends('admin.app')
+@extends('user.app')
 
 @section('title')
     My Profile
@@ -20,6 +20,10 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{{route('edit-bank')}}"><i class="bx bxs-bank me-1"></i> Update Bank Details</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="{{route('changepass')}}"><i class="bx bxs-user me-1"></i>Change Password</a>
             </li>
           </ul>
         

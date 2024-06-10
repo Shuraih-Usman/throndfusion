@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use App\Helpers\ActivityLog;
+use App\Helpers\ActivityLogHelper;
+use Illuminate\Support\Facades\Hash;
 class Users extends Controller
 {
     //
@@ -47,6 +48,7 @@ class Users extends Controller
             $user->image_folder = $subfolder;
             $user->gender = $request->gender;
             $user->dob = $request->dob;
+            $user->phone = $request->phone;
             $user->address = $request->address;
             $user->organization = $request->organization;
             $user->country = $request->country;
@@ -57,7 +59,7 @@ class Users extends Controller
             $user->save();
             $s = 1;
             $m = "You have successfully Update Your Profile .";
-            ActivityLog::log('Profile', Admin('id'), $m);
+            ActivityLogHelper::log('Profile', Admin('id'), $m);
             }
         
 
@@ -86,9 +88,44 @@ class Users extends Controller
             $user->save();
             $s = 1;
             $m = " Bank details successfully updated";
-            ActivityLog::log('Profile', Admin('id'), $m);
+            ActivityLogHelper::log('Profile', Admin('id'), $m);
         }
 
         return ['m' => $m, 's' => $s];
+    }
+
+    public function changePass(Request $request) {
+        $s = 0;
+        $messages = [
+            'oldpass.required' => 'The old password is required.',
+            'newpass.required' => 'The new password is required.',
+            'newpass.min' => 'The new password must be at least 8 characters.',
+            'newpass.confirmed' => 'The new password confirmation does not match.',
+        ];
+
+        $validator = Validator::make($request->all(), [
+            'oldpass' => 'required',
+            'newpass' => 'required|min:8|confirmed',
+        ], $messages);
+
+        if($validator->fails()) {
+            $m = $validator->errors()->first();
+        } else {
+
+            $id = Admin('id');
+            $admin = User::find($id);
+            if(!Hash::check($request->oldpass, $admin->password)) {
+                $m = "Invalid Old password";
+            } else {
+
+                $admin->password = Hash::make($request->newpass);
+                $admin->save();
+                $s = 1;
+                $m = "Successfully Change your password";
+                
+            }
+        }
+        return ['m' => $m, 's' => $s];
+        
     }
 }

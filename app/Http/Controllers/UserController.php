@@ -5,9 +5,34 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use App\Models\UserModel\Wallet;
+use App\Models\UserModel\Service;
+use App\Models\UserModel\Campaign;
+use App\Models\AdminModel\Payment;
+use Carbon\Carbon;
 class UserController extends Controller
 {
     //
+
+
+    public function Dashboard() {
+        $year = Carbon::now()->year;
+        $allPayments = Payment::where('status', '=', 1)->where('verify', '=', 1)->sum('price');
+        $payment_this_year = Payment::where('status', '=', 1)->where('verify', '=', 1)
+                                        ->whereYear('created_at', '=', $year)
+                                        ->sum('price');
+        $withdrawal_this_year = Wallet::where('status', '=', 1)->where('type', '=','widthrawal')
+                                        ->whereYear('created_at', '=', $year)
+                                        ->sum('amount');                                
+        $allWithdraw = Wallet::where('status', '=', 1)->where('type', '=', 'widthrawal')->sum('amount');
+
+        $total_users = User::where('status', '=', 1)->count();
+        $total_users_year = User::where('status', '=', 1)->whereYear('created_at', '=', $year)->count();
+
+        $total_services = Service::where('status', '=', 1)->count();
+        $total_campaign = Campaign::where('status', '=', 1)->count();
+        return view('admin.dashboard', compact('allPayments', 'allWithdraw', 'payment_this_year', 'withdrawal_this_year', 'total_users', 'total_services', 'total_campaign', 'total_users_year'));
+    }
 
     public function loginPage() {
         return view('user.login');
@@ -31,6 +56,10 @@ class UserController extends Controller
 
         public function Wallet() {
         return view('user.wallet.add');
+    }
+
+    public function changePass() {
+        return view('user.profile.password');
     }
 
     Public function Messages() {
@@ -82,5 +111,17 @@ class UserController extends Controller
         $user = User::find(Admin('id'));
 
         return view('user.profile.bank', compact('user'));
+    }
+
+    public function Payments() {
+        return view('user.payment');
+    }
+
+    public function Activity() {
+        return view('user.activity');
+    }
+
+     public function Reviews() {
+        return view('user.review');
     }
 }

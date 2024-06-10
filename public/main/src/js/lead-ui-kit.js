@@ -67,7 +67,7 @@ $('.dropdown').on('show.bs.dropdown', function(e){
     // const modally = new Modally();
     // modally.add('cprojects');
 
-    $('.select_campaign').click(function(e) {
+    $(document).on('click', '.select_campaign', function(e) {
       e.preventDefault();
   
       var title = $(this).data('title');
@@ -110,8 +110,9 @@ $('.dropdown').on('show.bs.dropdown', function(e){
           bodyOverflow: false,
       });
       
-  
-      $('#_capm_submit').click(function(e) {
+      $(document).off('click', '#_capm_submit');
+      
+      $(document).on('click', '#_capm_submit', function(e) {
           e.preventDefault();
   
           $.ajax({
