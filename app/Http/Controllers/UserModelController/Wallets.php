@@ -8,6 +8,7 @@ use App\Models\UserModel\Wallet;
 use App\Models\AdminModel\Withdraw_request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\ActivityLogHelper;
 
 class Wallets extends Controller
 {
@@ -59,12 +60,13 @@ class Wallets extends Controller
 
             $status = $row->status == 1 ? '<span class="badge bg-label-primary me-1">Success</span>' : ($row->status == 2 ? '<span class="badge bg-label-warning me-1">Pending</span>' :'<span class="badge bg-label-danger me-1">Failed</span>' );
 
+            $amount = $row->type == 'funding' ? '<span class="text-success">+N'.$row->amount.'</span>' : '<span class="text-danger">-N'.$row->amount.'</span>';
             
 
     
             $rowData = [
                $row->id,
-               $row->amount,
+               $amount,
                $row->type,
                $row->reference,
                $status,
@@ -122,6 +124,7 @@ class Wallets extends Controller
                     DB::commit();
                     $s = 1;
                     $m = TEXT['s_u_withraw'];
+                    ActivityLogHelper::log('Wallet', Admin('id'), $m);
                 }  catch(\Exception $e) {
                     DB::rollBack();
                     $m = $e->getMessage();

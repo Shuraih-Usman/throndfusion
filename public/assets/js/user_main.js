@@ -397,7 +397,9 @@
   
     $(document).on('submit', '#addform', function(e) {
       e.preventDefault();
-  
+
+      console.log('yes');
+      
       const formData = new FormData($(this)[0]);
       Request(ajaxURL, formData, 'addform');
     });
@@ -1069,9 +1071,9 @@ var onwork_services = $("#onwork_services").DataTable({
             });
         }
   
-          // INVESTMENT DETAILS MODAL
+          // INVESTMENT DETAILS MODALs
   
-          var invest_links = document.querySelectorAll('.service_details');
+          var invest_links = document.querySelectorAll('.proof_details');
   
           invest_links.forEach(function(links) {
       
@@ -1111,6 +1113,18 @@ var onwork_services = $("#onwork_services").DataTable({
     responsive: true,
   });
 
+          // activity desc
+
+          $(document).on('click', '.activity', function(e) {
+            e.preventDefault();
+
+            var desc = $(this).data('description');
+
+            $("#description").text(desc);
+
+            $("#view").modal('show');
+
+          });
   
   // Adding funds to user account
   $('#user_add_funds').click(() => {

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\UserModel\Service;
 use Illuminate\Support\Str;
+use App\Helpers\ActivityLogHelper;
 use Carbon\Carbon;
 class Services extends Controller
 {
@@ -58,6 +59,7 @@ class Services extends Controller
                     DB::commit();
                     $s = 1;
                     $m = "You successfully submitted a Service.";
+                    ActivityLogHelper::log('Services', Admin('id'), $m);
                 } catch (\Exception $e) {
                     DB::rollBack();
                     $m = "An error occurred while submitting. Please contact admins.";
@@ -193,6 +195,7 @@ class Services extends Controller
                         if($total > 0) {
                             $s = 1;
                             $m = "$total $table where successfully Activated";
+                            ActivityLogHelper::log($table, Admin('id'), $m);
                         } else {
                             $m = "Failed to activate items";
                         }
@@ -212,6 +215,7 @@ class Services extends Controller
                         if($total > 0) {
                             $s = 1;
                             $m = "$total $table where successfully Close";
+                            ActivityLogHelper::log($table, Admin('id'), $m);
                         } else {
                             $m = "Failed to close items";
                         }
@@ -222,6 +226,7 @@ class Services extends Controller
                         $user->save();
                         $s = 1; 
                         $m = "Item was successfully updated";
+                        ActivityLogHelper::log($table, Admin('id'), $m);
                         break;
                     case 'activate':
                         $user = Service::find($ids);
@@ -229,6 +234,7 @@ class Services extends Controller
                         $user->save();
                         $s = 1; 
                         $m = "Item was successfully updated";
+                        ActivityLogHelper::log($table, Admin('id'), $m);
                         break;
                      case 'delete':
                         $user = Service::find($ids);
@@ -237,6 +243,7 @@ class Services extends Controller
                         $user->delete();
                         $s = 1; 
                         $m = "Item was deleted successfully";
+                        ActivityLogHelper::log($table, Admin('id'), $m);
                         break;                   
                     default:
                         $m = "Undefined action";
@@ -305,7 +312,8 @@ class Services extends Controller
                     $campaign->save();
                     DB::commit();
                     $s = 1;
-                    $m = "Edited Successfully ";
+                    $m = "Edited Successfully ID:" .$request->id;
+                    ActivityLogHelper::log('Service', Admin('id'), $m);
                 } catch (\Exception $e) {
                     DB::rollBack();
                     $m = "An error occurred while submitting the project. Please contact admins. ".$e->getMessage();
@@ -344,7 +352,7 @@ class Services extends Controller
             $query->where('s.title', 'LIKE', "%$searchValue%");
         }
     
-        $columns = ['service_enrolls.id', 's.title', 'service_enrolls.status', 'service_enrolls.created_at'];
+        $columns = ['service_enrolls.id', 'service_enrolls.title', 'service_enrolls.status', 'service_enrolls.created_at'];
         $orderColumn = $columns[$orderColumnIndex] ?? $columns[0];
         $orderDirection = isset($orderDirection) ? $orderDirection : 'desc';
     
@@ -433,8 +441,8 @@ class Services extends Controller
             $service->status = 2;
             $service->save();
             $s = 1;
-            $m = "You successfully finished and delivered this service pls wait to the buyer to confirm and release payment";
-
+            $m = "You successfully finished and delivered this service pls wait to the buyer to confirm and release payment: ID ".$data->id;
+            ActivityLogHelper::log('Service', Admin('id'), $m);
         }
 
         return ['m' => $m, 's' => $s];
@@ -487,7 +495,7 @@ class Services extends Controller
             $status = $row->status == 1 ? '<span class="badge bg-label-warning me-1">On Progress</span>' : ($row->status == 2 ? '<span class="badge bg-label-success me-1">Completed</span>' : '<span class="badge bg-label-danger me-1">Closed</span>');
             $image = '<img src="/images/'.$row->ifolder.$row->img.'" class="thumbnail" width="60" height="60"/>';
 
-            $action = $row->status == 2 ? 'service_details' : ($row->status == 1 ? '' : '');
+            $action = $row->status == 2 ? 'proof_details' : ($row->status == 1 ? '' : '');
 
          
 
@@ -534,6 +542,8 @@ class Services extends Controller
             } else if($service->status == 0) {
                 $m = "The service was already released and approved by you";
             }  else {
+
+                
     
                 $percentage = getPercent(SERVICE_PERCENT, $service->total);
                 $paying =  $service->total - $percentage;
@@ -544,12 +554,21 @@ class Services extends Controller
                 $users = new \App\Models\User;
                 $user_id = getRowData('services', 'user_id', $service->service_id);
                 $user = $users::find($user_id);
+
+                $rating = $data->star ? $data->star : 1;
+                $rate = new \App\Models\UserModel\Rate;
+                $rate->creator_id = $user_id;
+                $rate->user_id = Admin('id');
+                $rate->rate = $rating;
+                $rate->review = $data->review;
+                $rate->save();
         
                 $adding = $user->balance + $paying;
                 $user->balance = $adding;
                 $user->save();
-                $m = "Successfully approved this service";
+                $m = "Successfully approved this service with id $data->id";
                 $s = 1;
+                ActivityLogHelper::log('Service', Admin('id'), $m);
             }
         } else {
             $m = "Service not found";

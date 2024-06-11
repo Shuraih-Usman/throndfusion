@@ -7,11 +7,55 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\ActivityLogHelper;
 use Illuminate\Validation\ValidationException;
+use App\Models\UserModel\Wallet;
+use App\Models\AdminModel\Payment;
+use Carbon\Carbon;
+use App\Models\User;
 class UserAjax extends Controller
 {
     //
 
+        public function Ajax(Request $request) {
+        $action = $request->action;
+
+        if($action == 'getchart1') {
+
+            $year = Carbon::now()->year;
+            $payment = Payment::select(
+                DB::raw('SUM(price) as total_amount'),
+                DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month')
+            )
+            ->where('status', '=', 1)
+            ->where('verify', '=', 1)
+            ->where('user_id', '=', Admin('id'))
+            ->whereYear('created_at', '=', $year)
+            ->groupBy(DB::raw('DATE_FORMAT(created_at, "%Y-%m")'))
+            ->get();
+
+            $withdraw =  Wallet::select(
+                DB::raw('SUM(amount) as amount'),
+                DB::raw('DATE_FORMAT(created_at, "%M") as month' )
+            )
+            ->where('type', '=', 'widthrawal')
+            ->where('status', '=', 1)
+            ->where('user_id', '=', Admin('id'))
+            ->groupBy(DB::raw('DATE_FORMAT(created_at, "%M")'))
+            ->get();
+
+            $users = User::select(
+                DB::raw('count(id) as total'),
+                DB::raw('DATE_FORMAT(created_at, "%M") as month')
+            )
+                ->where('status', '=', 1)
+                ->groupBy(DB::raw('DATE_FORMAT(created_at, "%M")'))
+                ->get();
+
+            return response()->json(['payment' => $payment, 'withdraw' => $withdraw, 'user' => $users]); 
+
+        }
+    }
     public function index(Request $request, $model) 
     {
         $action = $request->action;
@@ -167,6 +211,14 @@ class UserAjax extends Controller
             $List = new $class();
             $data = $List->approve_service($request);
             return response()->json($data);
+        } else if($action == 'updatebank') {
+            $userClass = new \App\Http\Controllers\UserModelController\Users;
+            $data = $userClass->bankDetails($request);
+            return response()->json($data);
+        } else if($action == 'changepass') {
+            $userClass = new \App\Http\Controllers\UserModelController\Users;
+            $data = $userClass->changePass($request);
+            return response()->json($data);
         }
         
     }
@@ -180,6 +232,7 @@ class UserAjax extends Controller
         if(Auth::attempt($cred)) {
             $m = "Successfully Login";
             $s = 1;
+            ActivityLogHelper::log('Login', Admin('id'), $m);
             Session::flash('login', 'You successfully Login.');
             return redirect()->intended('/user/dashboard');
         } else {

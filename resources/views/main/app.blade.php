@@ -240,9 +240,9 @@
                     <img src="/main/assets/images/logo.svg" class="logo-image img-fluid" alt="{{APP_NAME}}">
                 </a>
 
-                <form action="#" method="get" class="custom-form search-form flex-fill me-3" role="search">
+                <form action="/search" method="get" class="custom-form search-form flex-fill me-3" role="search">
                     <div class="input-group input-group-lg">    
-                        <input name="search" type="search" class="form-control" id="search" placeholder="Search Podcast" aria-label="Search">
+                        <input name="q" type="search" class="form-control" id="search" placeholder="Search Services" aria-label="Search">
 
                         <button type="submit" class="form-control" id="submit">
                             <i class="bi-search"></i>
@@ -279,8 +279,14 @@
                         </li>
                     
                     @if (auth()->check())
-                    <li class="nav-item ms-4">
-                        <a href="#" class="btn custom-btn custom-border-btn smoothscroll m-1">Get started</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Account</a>
+
+                        <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
+                            <li><a class="dropdown-item" href="/user/dashboard">Dashboard</a></li>
+
+                            <li><a class="dropdown-item" href="/user/profile">Profile</a></li>
+                        </ul>
                     </li>
                     @else
                     <li class="nav-item ms-4">
@@ -310,8 +316,7 @@
     <div id="login-custom" data-iziModal-group="grupo1">
         <button data-iziModal-close class="icon-close">x</button>
         <header>
-            <a href="" id="signin">Sign in</a>
-            <a href="" class="active">New Account</a>
+            <h4 class="m-3 ">Sign in</h4>
         </header>
         <section>
             <input type="text" id="custom-login-email" placeholder="Email">
@@ -321,16 +326,7 @@
                 <button id="submit-custom-login" class="submit">Log in</button>            
             </footer>
         </section >
-        <section class="hide">
-            <input type="text" placeholder="Username">
-            <input type="text" placeholder="Email">
-            <input type="password" placeholder="Password">
-            <label for="check"><input type="checkbox" name="checkbox" id="check" value="1"> I agree to the <u>Terms</u>.</label>
-            <footer>
-                <button data-iziModal-close>Cancel</button>
-                <button class="submit">Create Account</button>            
-            </footer>
-        </section>
+
     </div>
         <!-- partial:partials/_footer.html -->
        

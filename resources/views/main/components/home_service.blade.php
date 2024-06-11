@@ -1,10 +1,10 @@
 
-<section class="trending-podcast-section section-padding pt-0 mb-5">
+<section class="trending-podcast-section section-padding pt-0  mt-5">
     <div class="container">
         <div class="row">
 
             <div class="col-lg-12 col-12">
-                <div class="section-title-wrap mb-5">
+                <div class="section-title-wrap mb-3">
                     <h4 class="section-title">Services / Gigs</h4>
                 </div>
             </div>

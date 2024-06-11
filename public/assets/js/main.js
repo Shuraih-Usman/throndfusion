@@ -555,6 +555,34 @@ $(document).ready(function() {
             $("#se_date").text($(this).data('date'));
             $("#service_enroll_modal").modal('show');
           });
+
+          $(document).on('click', '.view-account', function(e) {
+            e.preventDefault();
+
+            var bank = $(this).data('bank');
+            var account = $(this).data('account');
+            var account_name = $(this).data('account_name');
+
+            $("#bank_name").text(bank);
+            $("#account_number").text(account);
+            $("#accounr_name").text(account_name);
+
+            $("#account_details").modal('show');
+
+          });
+
+          // activity desc
+
+          $(document).on('click', '.activity', function(e) {
+            e.preventDefault();
+
+            var desc = $(this).data('description');
+
+            $("#description").text(desc);
+
+            $("#view").modal('show');
+
+          });
           
 
 
