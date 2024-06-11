@@ -9,10 +9,53 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\ActivityLogHelper;
 use Illuminate\Validation\ValidationException;
+use App\Models\UserModel\Wallet;
+use App\Models\AdminModel\Payment;
+use Carbon\Carbon;
+use App\Models\User;
 class UserAjax extends Controller
 {
     //
 
+        public function Ajax(Request $request) {
+        $action = $request->action;
+
+        if($action == 'getchart1') {
+
+            $year = Carbon::now()->year;
+            $payment = Payment::select(
+                DB::raw('SUM(price) as total_amount'),
+                DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month')
+            )
+            ->where('status', '=', 1)
+            ->where('verify', '=', 1)
+            ->where('user_id', '=', Admin('id'))
+            ->whereYear('created_at', '=', $year)
+            ->groupBy(DB::raw('DATE_FORMAT(created_at, "%Y-%m")'))
+            ->get();
+
+            $withdraw =  Wallet::select(
+                DB::raw('SUM(amount) as amount'),
+                DB::raw('DATE_FORMAT(created_at, "%M") as month' )
+            )
+            ->where('type', '=', 'widthrawal')
+            ->where('status', '=', 1)
+            ->where('user_id', '=', Admin('id'))
+            ->groupBy(DB::raw('DATE_FORMAT(created_at, "%M")'))
+            ->get();
+
+            $users = User::select(
+                DB::raw('count(id) as total'),
+                DB::raw('DATE_FORMAT(created_at, "%M") as month')
+            )
+                ->where('status', '=', 1)
+                ->groupBy(DB::raw('DATE_FORMAT(created_at, "%M")'))
+                ->get();
+
+            return response()->json(['payment' => $payment, 'withdraw' => $withdraw, 'user' => $users]); 
+
+        }
+    }
     public function index(Request $request, $model) 
     {
         $action = $request->action;

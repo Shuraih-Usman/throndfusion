@@ -126,9 +126,8 @@ Route::prefix('/user')->group(function() {
         Route::get('edit-bank', [UserController::class, 'editBank'])->name('edit-bank');
         Route::get('edit-password', [UserController::class, 'changePass'])->name('changepass');
         Route::get('reviews', [UserController::class, 'Reviews'])->name('user.review');
-        Route::get('dashboard', function() {
-            return "YEYEYEYEYEY";
-        });
+        Route::get('dashboard', [UserController::class, 'Dashboard'])->name('user.dashboard');
+        Route::match(['get', 'post'], '/ajax',[UserAjax::class, 'Ajax']);
     });
 });
 

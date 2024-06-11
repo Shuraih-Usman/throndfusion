@@ -226,12 +226,7 @@
               </a>
             </li>
 
-            <li class="menu-item ">
-              <a href="{{route('users.messages')}}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-message"></i>
-                <div data-i18n="Messages">Messages</div>
-              </a>
-            </li>
+
 
             <!-- Layouts -->
             <li class="menu-item">
@@ -449,7 +444,7 @@
     <script src="/assets/js/user_main.js"></script>
     <script type="text/javascript" src="/main/src/js/toastify-js.js"></script>
     <!-- Page JS -->
-    <script src="/assets/js/dashboards-analytics.js"></script>
+    <script src="/assets/js/dashboards.js"></script>
     <script src="/assets/js/pages-account-settings-account.js"></script>
 
     <!-- Place this tag in your head or just before your close body tag. -->

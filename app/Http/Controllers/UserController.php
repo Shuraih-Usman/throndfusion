@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\UserModel\Wallet;
 use App\Models\UserModel\Service;
+use App\Models\UserModel\Service_enroll;
 use App\Models\UserModel\Campaign;
 use App\Models\AdminModel\Payment;
 use Carbon\Carbon;
@@ -17,21 +18,23 @@ class UserController extends Controller
 
     public function Dashboard() {
         $year = Carbon::now()->year;
-        $allPayments = Payment::where('status', '=', 1)->where('verify', '=', 1)->sum('price');
+        $allPayments = Payment::where('status', '=', 1)->where('user_id', '=', Admin('id'))->where('verify', '=', 1)->sum('price');
         $payment_this_year = Payment::where('status', '=', 1)->where('verify', '=', 1)
                                         ->whereYear('created_at', '=', $year)
+                                        ->where('user_id', Admin('id'))
                                         ->sum('price');
         $withdrawal_this_year = Wallet::where('status', '=', 1)->where('type', '=','widthrawal')
                                         ->whereYear('created_at', '=', $year)
+                                        ->where('user_id', '=', Admin('id'))
                                         ->sum('amount');                                
-        $allWithdraw = Wallet::where('status', '=', 1)->where('type', '=', 'widthrawal')->sum('amount');
+        $allWithdraw = Wallet::where('status', '=', 1)->where('user_id', '=', Admin('id'))->where('type', '=', 'widthrawal')->sum('amount');
 
-        $total_users = User::where('status', '=', 1)->count();
+        $total_users = Service_enroll::where('buyer_id', Admin('id'))->where('status', '=', 1)->count();
         $total_users_year = User::where('status', '=', 1)->whereYear('created_at', '=', $year)->count();
 
-        $total_services = Service::where('status', '=', 1)->count();
-        $total_campaign = Campaign::where('status', '=', 1)->count();
-        return view('admin.dashboard', compact('allPayments', 'allWithdraw', 'payment_this_year', 'withdrawal_this_year', 'total_users', 'total_services', 'total_campaign', 'total_users_year'));
+        $total_services = Service::where('status', '=', 1)->where('user_id', '=', Admin('id'))->count();
+        $total_campaign = Campaign::where('status', '=', 1)->where('user_id', '=', Admin('id'))->count();
+        return view('user.dashboard', compact('allPayments', 'allWithdraw', 'payment_this_year', 'withdrawal_this_year', 'total_users', 'total_services', 'total_campaign', 'total_users_year'));
     }
 
     public function loginPage() {

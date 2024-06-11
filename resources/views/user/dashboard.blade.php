@@ -68,7 +68,6 @@
                 </div>
                 <span class="fw-semibold d-block mb-1">Month Deposits </span>
                 <h3 class="card-title mb-2">{{CUR.$allPayments}}</h3>
-                <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +72.80%</small>
               </div>
             </div>
           </div>
@@ -104,7 +103,6 @@
                 </div>
                 <span>Month Withdraw</span>
                 <h3 class="card-title text-nowrap mb-1">{{CUR.$allWithdraw}}</h3>
-                <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +28.42%</small>
               </div>
             </div>
           </div>
@@ -236,7 +234,7 @@
               <div class="card-body">
                 <div class="card-title d-flex align-items-start justify-content-between">
                   <div class="avatar flex-shrink-0">
-                    <i class="bx bx-user rounded"></i>
+                    <i class="bx bxs-server rounded"></i>
                   </div>
                   <div class="dropdown">
                     <button
@@ -250,11 +248,11 @@
                       <i class="bx bx-dots-vertical-rounded"></i>
                     </button>
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt4">
-                      <a class="dropdown-item" href="{{route('admin.users')}}">View More</a>
+                      <a class="dropdown-item" href="{{route('user.services')}}">View More</a>
                     </div>
                   </div>
                 </div>
-                <span class="d-block mb-1">Total users</span>
+                <span class="d-block mb-1">Enrolled Service</span>
                 <h3 class="card-title text-nowrap mb-2">{{$total_users}}</h3>
               </div>
             </div>
@@ -280,7 +278,7 @@
                       <i class="bx bx-dots-vertical-rounded"></i>
                     </button>
                     <div class="dropdown-menu" aria-labelledby="cardOpt1">
-                      <a class="dropdown-item" href="{{route('admin.services')}}">View More</a>
+                      <a class="dropdown-item" href="{{route('user.services')}}">View More</a>
                     </div>
                   </div>
                 </div>
@@ -310,7 +308,7 @@
                       <i class="bx bx-dots-vertical-rounded"></i>
                     </button>
                     <div class="dropdown-menu" aria-labelledby="cardOpt1">
-                      <a class="dropdown-item" href="{{route('admin.campaigns')}}">View More</a>
+                      <a class="dropdown-item" href="{{route('user.campaigns')}}">View More</a>
                     </div>
                   </div>
                 </div>
@@ -340,7 +338,7 @@
                       <i class="bx bx-dots-vertical-rounded"></i>
                     </button>
                     <div class="dropdown-menu" aria-labelledby="cardOpt1">
-                      <a class="dropdown-item" href="{{route('admin.services')}}">View More</a>
+                      <a class="dropdown-item" href="{{route('user.services')}}">View More</a>
                     </div>
                   </div>
                 </div>
@@ -353,26 +351,6 @@
 <div class="row"> -->
 
 
-          <div class="col-12 mb-4">
-            <div class="card">
-              <div class="card-body">
-                <div class="d-flex justify-content-between flex-sm-row flex-column gap-3">
-                  <div class="d-flex flex-sm-column flex-row align-items-start justify-content-between">
-                    <div class="card-title">
-                      <h5 class="text-nowrap mb-2">Users Report</h5>
-                      <span class="badge bg-label-warning rounded-pill">Year {{date('Y')}}</span>
-                    </div>
-                    <div class="mt-sm-auto">
-                      <small class="text-success text-nowrap fw-semibold"
-                        >
-                      <h3 class="mb-0">{{$total_users_year}}</h3>
-                    </div>
-                  </div>
-                  <div id="profileReportChart"></div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
